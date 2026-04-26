@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Adopto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+<div class="container-fluid">
+    <header>
+        <div class="logo">
+            <img src="images/logo.jpeg" alt="Adopto Logo" class="logo-img">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="adoption.html">Adopt</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <button class="btn btn-primary" id="login-signup-btn" data-bs-toggle="modal" data-bs-target="#login-modal">
+                Log In / Sign Up
+            </button>
+            <!-- Profile avatar button (shown when logged in) -->
+            <a href="#" class="profile-btn" onclick="openSidebar(); return false;" title="My Profile" style="display:none;">
+                <img id="nav-pfp-img" src="" alt="" style="display:none;">
+                <span class="nav-initials" id="nav-initials"></span>
+            </a>
+        </div>
+    </header>
+
+    <main class="contact-page">
+        <div class="contact-hero">
+            <h1>How can we help?</h1>
+            <p>Get in touch and let us know how we can help.</p>
+        </div>
+
+        <div class="contact-cards-container container py-5">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="contact-card">
+                        <div class="contact-card-header"><i class="bi bi-telephone"></i></div>
+                        <h5>Contact</h5>
+                        <p>+1-555-123-4567<br>+1-555-765-4321</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="contact-card">
+                        <div class="contact-card-header"><i class="bi bi-envelope"></i></div>
+                        <h5>Email</h5>
+                        <p>support@adopto.com<br>sales@adopto.com</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="contact-card">
+                        <div class="contact-card-header"><i class="bi bi-share"></i></div>
+                        <h5>Social Media</h5>
+                        <p>Facebook<br>Twitter<br>Instagram</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="contact-card">
+                        <div class="contact-card-header"><i class="bi bi-chat-dots"></i></div>
+                        <h5>Chat</h5>
+                        <p>Live chat with our team is available 24/7.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Donation and Feedback Section -->
+        <div class="container-fluid py-5">
+            <div class="row">
+                <!-- Donation -->
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="donate-section text-center h-100 p-4 border rounded-3">
+                        <h2 class="mb-4">Your Support Saves Lives</h2>
+                        <p class="lead mb-4">Your generous donation helps us provide food, shelter, medical care, and love to animals in need. By giving today, you become a crucial part of their journey to a forever home.</p>
+                        <div class="donate-box">
+                            <div class="qr-code-container">
+                                <img src="images/qr-code.png" alt="Donate QR Code">
+                                <p>Scan to Donate</p>
+                            </div>
+                            <div class="donate-message">
+                                <p><strong>Your donation saves lives!</strong></p>
+                                <p>Every rupee counts in our mission to give every pet the home they deserve.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback FORM -->
+                <div class="col-lg-6">
+                    <div class="h-100 p-4 border rounded-3" style="background:#fff;">
+                        <h2 style="text-align:center;font-size:1.8rem;font-weight:700;color:#333;margin-bottom:8px;">
+                            Share Your Experience 🐾
+                        </h2>
+                        <p style="text-align:center;color:#888;font-size:0.95rem;margin-bottom:24px;">
+                            Tell us about your adoption journey — your story inspires others!
+                        </p>
+
+                        <!-- Login prompt (shown when logged out) -->
+                        <div id="feedback-login-prompt" style="display:none;text-align:center;padding:16px;background:#fdf8f0;border-radius:12px;margin-bottom:16px;">
+                            <p style="margin:0;color:#666;">🔒 Please
+                                <a href="#" onclick="document.querySelector('.btn-primary').click();return false;"
+                                   style="color:#f9a826;font-weight:600;text-decoration:none;">log in</a>
+                                to leave feedback.
+                            </p>
+                        </div>
+
+                        <!-- Feedback form (shown when logged in) -->
+                        <div id="feedback-form-box" style="display:none;">
+                            <form id="feedbackForm">
+                                <!-- Star rating -->
+                                <div class="star-rating" id="starRating" style="font-size:2rem;margin-bottom:12px;cursor:pointer;">
+                                    <span class="star" data-value="1">★</span>
+                                    <span class="star" data-value="2">★</span>
+                                    <span class="star" data-value="3">★</span>
+                                    <span class="star" data-value="4">★</span>
+                                    <span class="star" data-value="5">★</span>
+                                </div>
+                                <input type="hidden" id="feedbackRating" value="0">
+
+                                <textarea id="feedbackMessage"
+                                    placeholder="Tell us about your adoption experience..."
+                                    rows="4"
+                                    required></textarea>
+
+                                <!-- Image upload -->
+                                <div class="feedback-img-upload-area" id="imgUploadArea">
+                                    <input type="file" accept="image/*" id="feedbackImageInput" onchange="handleFeedbackImagePreview(this)">
+                                    <span class="feedback-img-label" id="imgUploadLabel">📷 Add a photo (optional)</span>
+                                    <img id="feedbackImagePreview" class="feedback-img-preview" alt="Preview">
+                                </div>
+
+                                <div id="feedback-msg" style="font-size:0.9rem;margin-bottom:8px;"></div>
+                                <button type="submit" class="feedback-submit-btn">
+                                    Submit Feedback
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Already submitted message -->
+                        <div id="feedback-already" style="display:none;text-align:center;padding:24px;color:#2e7d32;font-weight:600;">
+                            ✅ Thank you! Your feedback has been submitted.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Login Modal -->
+<div class="modal fade" id="login-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Login / Sign Up</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="signupForm">
+                    <h2>Sign Up</h2>
+                    <input type="text" id="username" placeholder="Username" class="form-control mb-2" required>
+                    <input type="email" id="email" placeholder="Email" class="form-control mb-2" required>
+                    <input type="password" id="password" placeholder="Password" class="form-control mb-2" required>
+                    <input type="tel" id="phone" placeholder="Contact Number" class="form-control mb-2" required>
+                    <select id="role" class="form-control mb-2" required>
+                        <option value="" disabled selected>Select Role</option>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <div id="signup-msg" style="font-size:0.9rem;margin-bottom:8px;"></div>
+                    <button type="submit" class="btn btn-success w-100">Sign Up</button>
+                    <p class="form-switcher mt-2">Already have an account? <a href="#" id="show-login">Log In</a></p>
+                </form>
+                <form id="loginForm" style="display:none;">
+                    <h2>Log In</h2>
+                    <input type="text" id="loginUsername" placeholder="Username" class="form-control mb-2" required>
+                    <input type="password" id="loginPassword" placeholder="Password" class="form-control mb-2" required>
+                    <select id="loginRole" class="form-control mb-2" required>
+                        <option value="" disabled selected>Select Role</option>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <div id="login-msg" style="font-size:0.9rem;margin-bottom:8px;"></div>
+                    <div style="text-align:right;margin-bottom:8px;">
+                        <a href="#" onclick="openForgotModal();return false;"
+                           style="font-size:0.85rem;color:#f9a826;text-decoration:none;">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Log In</button>
+                    <p class="form-switcher mt-2">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Forgot Password Modal -->
+<div class="modal fade" id="forgot-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">🔑 Reset Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="fp-step1">
+                    <p style="color:#666;margin-bottom:16px;">Enter your registered email address.</p>
+                    <input type="email" id="fp-email" placeholder="Your email address" class="form-control mb-2">
+                    <div id="fp-msg1" style="font-size:0.9rem;margin-bottom:8px;"></div>
+                    <button class="btn w-100 fw-bold" onclick="sendOTP()" style="background:#f9a826;border:none;color:#fff;">Send OTP</button>
+                </div>
+                <div id="fp-step2" style="display:none;">
+                    <p style="color:#666;margin-bottom:16px;">OTP sent to <strong id="fp-email-display"></strong></p>
+                    <input type="text" id="fp-otp" placeholder="Enter OTP" class="form-control mb-2 text-center fw-bold" maxlength="6">
+                    <div id="fp-msg2" style="font-size:0.9rem;margin-bottom:8px;text-align:center;"></div>
+                    <button class="btn w-100 fw-bold mb-2" onclick="verifyOTP()" style="background:#f9a826;border:none;color:#fff;">Verify OTP</button>
+                    <button class="btn w-100" onclick="sendOTP(true)" style="background:transparent;border:1px solid #f9a826;color:#f9a826;font-size:0.9rem;">Resend OTP</button>
+                </div>
+                <div id="fp-step3" style="display:none;">
+                    <input type="password" id="fp-newpass" placeholder="New password" class="form-control mb-2">
+                    <input type="password" id="fp-confirmpass" placeholder="Confirm new password" class="form-control mb-2">
+                    <div id="fp-msg3" style="font-size:0.9rem;margin-bottom:8px;"></div>
+                    <button class="btn w-100 fw-bold" onclick="resetPassword()" style="background:#f9a826;border:none;color:#fff;">Reset Password</button>
+                </div>
+                <div id="fp-step4" style="display:none;text-align:center;padding:20px 0;">
+                    <div style="font-size:3rem;margin-bottom:16px;">✅</div>
+                    <h5 style="color:#2e7d32;margin-bottom:8px;">Password Reset!</h5>
+                    <button class="btn w-100 fw-bold" onclick="goToLogin()" style="background:#f9a826;border:none;color:#fff;">Go to Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sidebar Overlay -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- Profile Sidebar -->
+<div id="profile-sidebar">
+    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+    <div class="sidebar-pfp-wrap">
+        <div class="sidebar-avatar">
+            <img id="sidebar-pfp" src="" alt="Profile" style="display:none;">
+            <span id="sidebar-initials"></span>
+        </div>
+        <label class="pfp-upload-btn" title="Change photo">
+            📷
+            <input type="file" accept="image/*" style="display:none;" onchange="handlePfpUpload(this)">
+        </label>
+    </div>
+    <div class="sidebar-info">
+        <div class="sidebar-name" id="sidebar-username">—</div>
+        <div id="sidebar-admin-badge" style="display:none;margin-bottom:10px;">
+            <span style="background:#f9a826;color:#fff;font-size:0.78rem;font-weight:700;padding:3px 12px;border-radius:99px;">🛡️ ADMIN</span>
+        </div>
+        <div class="sidebar-detail"><span class="sidebar-icon">✉️</span><span id="sidebar-email">—</span></div>
+        <div class="sidebar-detail"><span class="sidebar-icon">📞</span><span id="sidebar-phone">—</span></div>
+        <div class="sidebar-detail"><span class="sidebar-icon">👤</span><span id="sidebar-role-label">—</span></div>
+    </div>
+    <hr class="sidebar-divider">
+    <div class="sidebar-actions">
+        <a href="report.html" class="sidebar-link" id="sidebar-reports-link">🚨 Report Animal</a>
+        <a href="my-reports.html" class="sidebar-link" id="sidebar-my-reports-link">📋 My Reports</a>
+        <a href="my-adoptions.html" class="sidebar-link" id="sidebar-adoptions-link">🐾 My Adoptions</a>
+        <a href="admin.html" class="sidebar-link" id="sidebar-dashboard-link" style="display:none;">⚙️ Admin Dashboard</a>
+        <button class="sidebar-logout" onclick="logout()">🚪 Log Out</button>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <h4>About Adopto</h4>
+                <p>Adopto is dedicated to connecting loving families with pets in need.</p>
+            </div>
+            <div class="col-md-3">
+                <h4>Contact Us</h4>
+                <p>Email: info@adopto.com<br>Phone: +1 (123) 456-7890<br>Hours: Mon-Fri, 9 AM - 5 PM</p>
+            </div>
+            <div class="col-md-3">
+                <h4>Our Location</h4>
+                <p>123 Pet Haven Lane<br>Suite 100<br>Animal City, AC 12345</p>
+            </div>
+            <div class="col-md-3">
+                <h4>Connect With Us</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="bi bi-facebook"></i> Facebook</a><br>
+                    <a href="#"><i class="bi bi-twitter"></i> Twitter</a><br>
+                    <a href="#"><i class="bi bi-instagram"></i> Instagram</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Adopto — All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+<script>
+// ── Nav avatar sync ───────────────────────────────────────────────────────────
+function syncNavAvatar() {
+    const user = JSON.parse(localStorage.getItem('loggedInUser') || 'null');
+    const loginBtn  = document.querySelector('.btn-primary[data-bs-target="#login-modal"]');
+    const profileBtn = document.querySelector('.profile-btn');
+    const navImg    = document.getElementById('nav-pfp-img');
+    const navInit   = document.getElementById('nav-initials');
+
+    if (!user) {
+        if (loginBtn)   loginBtn.style.display  = '';
+        if (profileBtn) profileBtn.style.display = 'none';
+        return;
+    }
+
+    if (loginBtn)   loginBtn.style.display  = 'none';
+    if (profileBtn) profileBtn.style.display = 'flex';
+
+    const pfp = localStorage.getItem('adopto_pfp_' + user.username);
+    if (pfp && navImg) {
+        navImg.src = pfp;
+        navImg.style.display = 'block';
+        if (navInit) navInit.style.display = 'none';
+    } else if (navInit) {
+        navInit.textContent = (user.username || '?')[0].toUpperCase();
+        navInit.style.display = 'block';
+        if (navImg) navImg.style.display = 'none';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', syncNavAvatar);
+document.addEventListener('authStateChanged', syncNavAvatar);
+
+// ── Feedback Image Preview ────────────────────────────────────────────────────
+function handleFeedbackImagePreview(input) {
+    const preview = document.getElementById('feedbackImagePreview');
+    const label   = document.getElementById('imgUploadLabel');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            label.textContent = '✅ Photo added — click to change';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// ── Feedback Form Logic ───────────────────────────────────────────────────────
+function initFeedbackForm() {
+    const user        = JSON.parse(localStorage.getItem('loggedInUser') || 'null');
+    const loginPrompt = document.getElementById('feedback-login-prompt');
+    const formBox     = document.getElementById('feedback-form-box');
+    const alreadyBox  = document.getElementById('feedback-already');
+
+    if (!user) {
+        loginPrompt.style.display = 'block';
+        formBox.style.display     = 'none';
+        alreadyBox.style.display  = 'none';
+        return;
+    }
+
+    const feedbacks = JSON.parse(localStorage.getItem('adopto_feedbacks') || '[]');
+    const already   = feedbacks.some(f => f.username === user.username);
+
+    loginPrompt.style.display = 'none';
+    if (already) {
+        formBox.style.display    = 'none';
+        alreadyBox.style.display = 'block';
+    } else {
+        formBox.style.display    = 'block';
+        alreadyBox.style.display = 'none';
+    }
+}
+
+// Star rating
+document.querySelectorAll('.star').forEach(star => {
+    star.addEventListener('mouseover', function () {
+        const val = +this.dataset.value;
+        document.querySelectorAll('.star').forEach(s => {
+            s.style.color = +s.dataset.value <= val ? '#f9a826' : '#ccc';
+        });
+    });
+    star.addEventListener('mouseout', function () {
+        const selected = +document.getElementById('feedbackRating').value;
+        document.querySelectorAll('.star').forEach(s => {
+            s.style.color = +s.dataset.value <= selected ? '#f9a826' : '#ccc';
+        });
+    });
+    star.addEventListener('click', function () {
+        const val = +this.dataset.value;
+        document.getElementById('feedbackRating').value = val;
+        document.querySelectorAll('.star').forEach(s => {
+            s.style.color = +s.dataset.value <= val ? '#f9a826' : '#ccc';
+        });
+    });
+});
+
+// Form submit
+document.getElementById('feedbackForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const user    = JSON.parse(localStorage.getItem('loggedInUser') || 'null');
+    const rating  = +document.getElementById('feedbackRating').value;
+    const message = document.getElementById('feedbackMessage').value.trim();
+    const msgEl   = document.getElementById('feedback-msg');
+    const imgInput = document.getElementById('feedbackImageInput');
+
+    if (!user)    { msgEl.style.color = 'red'; msgEl.textContent = 'Please log in first.'; return; }
+    if (!rating)  { msgEl.style.color = 'red'; msgEl.textContent = 'Please select a star rating.'; return; }
+    if (!message) { msgEl.style.color = 'red'; msgEl.textContent = 'Please enter a message.'; return; }
+
+    const feedbacks = JSON.parse(localStorage.getItem('adopto_feedbacks') || '[]');
+    if (feedbacks.some(f => f.username === user.username)) {
+        msgEl.style.color = 'orange';
+        msgEl.textContent = 'You have already submitted feedback.';
+        return;
+    }
+
+    function saveWithImage(imageData) {
+        feedbacks.push({
+            id:        Date.now(),
+            username:  user.username,
+            rating,
+            message,
+            image:     imageData || null,
+            likes:     0,
+            likedBy:   [],
+            timestamp: new Date().toISOString()
+        });
+        localStorage.setItem('adopto_feedbacks', JSON.stringify(feedbacks));
+        document.getElementById('feedback-form-box').style.display  = 'none';
+        document.getElementById('feedback-already').style.display   = 'block';
+    }
+
+    if (imgInput.files && imgInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(ev) { saveWithImage(ev.target.result); };
+        reader.readAsDataURL(imgInput.files[0]);
+    } else {
+        saveWithImage(null);
+    }
+});
+
+document.addEventListener('authStateChanged', initFeedbackForm);
+document.addEventListener('DOMContentLoaded', initFeedbackForm);
+</script>
+</body>
+</html>

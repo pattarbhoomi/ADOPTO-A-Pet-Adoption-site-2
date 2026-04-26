@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report an Animal - Adopto</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #fdf8f0; }
+
+    .report-page {
+      max-width: 620px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .report-page h2 {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .report-page .subtitle {
+      text-align: center;
+      color: #888;
+      font-size: 0.95rem;
+      margin-bottom: 30px;
+    }
+
+    .form-section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f9a826;
+      margin: 24px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #fdf8f0;
+    }
+
+    .form-label { font-weight: 600; color: #444; font-size: 0.95rem; }
+
+    .form-control, .form-select {
+      border-radius: 10px;
+      padding: 11px 14px;
+      border: 1px solid #ddd;
+      font-size: 0.95rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #f9a826;
+      box-shadow: 0 0 0 0.2rem rgba(249,168,38,0.2);
+    }
+
+    .image-preview {
+      margin-top: 10px;
+      border-radius: 12px;
+      max-width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      display: none;
+      border: 2px solid #f9a826;
+    }
+
+    .location-btn {
+      background: #fdf8f0;
+      border: 2px solid #f9a826;
+      color: #f9a826;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+
+    .location-btn:hover { background: #f9a826; color: #fff; }
+
+    .location-detected {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: #2e7d32;
+      background: #e8f9ee;
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .submit-report-btn {
+      width: 100%;
+      padding: 14px;
+      background: #f9a826;
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 24px;
+    }
+
+    .submit-report-btn:hover { background: #e0930f; }
+    .submit-report-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+    #report-msg { text-align: center; font-size: 0.95rem; margin-top: 12px; }
+
+    /* Emergency banner */
+    .emergency-banner {
+      background: #fff0f0;
+      border: 2px solid #f44336;
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .emergency-banner .sos-icon { font-size: 2rem; flex-shrink: 0; }
+
+    .emergency-banner h5 {
+      margin: 0 0 4px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #c62828;
+    }
+
+    .emergency-banner p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: #555;
+    }
+
+    .emergency-banner a {
+      color: #c62828;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* Static emergency footer */
+    .emergency-footer {
+      background: #fff0f0;
+      border-top: 3px solid #f44336;
+      padding: 20px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .emergency-footer h5 {
+      color: #c62828;
+      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .emergency-numbers {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .emergency-number-item {
+      text-align: center;
+    }
+
+    .emergency-number-item .num {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #c62828;
+      display: block;
+    }
+
+    .emergency-number-item .label {
+      font-size: 0.8rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid">
+  <header>
+    <div class="logo">
+      <img src="images/logo.jpeg" alt="Adopto Logo" class="logo-img">
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="adoption.html">Adopt</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="auth-buttons">
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#login-modal">
+        Log In / Sign Up
+      </button>
+      <a href="#" class="profile-btn" onclick="openSidebar(); return false;" style="display:none;">Profile</a>
+    </div>
+  </header>
+
+  <div class="report-page">
+    <h2>🐾 Report an Animal</h2>
+    <p class="subtitle">Spotted an injured or stray animal? Report it and our NGO partners will respond.</p>
+
+    <!-- Emergency banner -->
+    <div class="emergency-banner">
+      <span class="sos-icon">🚨</span>
+      <div>
+        <h5>Emergency? Call immediately!</h5>
+        <p>For life-threatening situations call Animal Emergency: <a href="tel:1962">1962</a> or Wildlife: <a href="tel:18001805141">1800-180-5141</a></p>
+      </div>
+    </div>
+
+    <form id="reportForm">
+      <div class="form-section-title">👤 Your Details</div>
+      <div class="mb-3">
+        <label class="form-label">Your Name *</label>
+        <input type="text" id="report-name" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Your Email *</label>
+        <input type="email" id="report-email" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Your Phone *</label>
+        <input type="tel" id="report-phone" class="form-control" required>
+      </div>
+
+      <div class="form-section-title">🐕 Animal Details</div>
+      <div class="mb-3">
+        <label class="form-label">Type of Animal</label>
+        <select id="report-animal-type" class="form-select">
+          <option value="" selected>Not sure / Other</option>
+          <option value="Dog">Dog</option>
+          <option value="Cat">Cat</option>
+          <option value="Bird">Bird</option>
+          <option value="Cow">Cow</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Describe the situation *</label>
+        <textarea id="report-description" class="form-control" rows="4"
+          placeholder="Is the animal injured? Alone? Aggressive? Any other details..." required></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Upload a photo (optional)</label>
+        <input type="file" id="report-image" class="form-control" accept="image/*"
+               onchange="previewReportImage(this)">
+        <img id="report-img-preview" class="image-preview" alt="Preview">
+      </div>
+
+      <div class="form-section-title">📍 Location</div>
+      <div class="mb-3">
+        <label class="form-label">Address / Landmark *</label>
+        <textarea id="report-location" class="form-control" rows="2"
+          placeholder="e.g. Near XYZ petrol pump, Main Street, Pune" required></textarea>
+        <button type="button" class="location-btn" onclick="detectLocation()">
+          📍 Use My Current Location
+        </button>
+        <div class="location-detected" id="location-detected">
+          ✅ Location detected and filled!
+        </div>
+      </div>
+
+      <div id="report-msg"></div>
+      <button type="submit" class="submit-report-btn" id="report-submit-btn">
+        Submit Report 🐾
+      </button>
+    </form>
+  </div>
+
+  <!-- Emergency numbers footer -->
+  <div class="emergency-footer">
+    <h5>🚨 Emergency Animal Helplines</h5>
+    <div class="emergency-numbers">
+      <div class="emergency-number-item">
+        <span class="num"><a href="tel:1962" style="color:#c62828;text-decoration:none;">1962</a></span>
+        <span class="label">Animal Helpline</span>
+      </div>
+      <div class="emergency-number-item">
+        <span class="num"><a href="tel:18001805141" style="color:#c62828;text-decoration:none;">1800-180-5141</a></span>
+        <span class="label">Wildlife SOS</span>
+      </div>
+      <div class="emergency-number-item">
+        <span class="num"><a href="tel:+911125649900" style="color:#c62828;text-decoration:none;">+91-11-2564-9900</a></span>
+        <span class="label">PETA India</span>
+      </div>
+      <div class="emergency-number-item">
+        <span class="num"><a href="tel:18001031" style="color:#c62828;text-decoration:none;">1800-103-1</a></span>
+        <span class="label">Blue Cross</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+<div id="profile-sidebar">
+  <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+  <div class="sidebar-pfp-wrap">
+    <div class="sidebar-avatar">
+      <img id="sidebar-pfp" src="" alt="Profile" style="display:none;">
+      <span id="sidebar-initials"></span>
+    </div>
+    <label class="pfp-upload-btn" title="Change photo">
+      📷
+      <input type="file" accept="image/*" style="display:none;" onchange="handlePfpUpload(this)">
+    </label>
+  </div>
+  <div class="sidebar-info">
+    <div class="sidebar-name" id="sidebar-username">—</div>
+    <div id="sidebar-admin-badge" style="display:none; margin-bottom:10px;">
+      <span style="background:#f9a826;color:#fff;font-size:0.78rem;font-weight:700;padding:3px 12px;border-radius:99px;">🛡️ ADMIN</span>
+    </div>
+    <div class="sidebar-detail"><span class="sidebar-icon">✉️</span><span id="sidebar-email">—</span></div>
+    <div class="sidebar-detail"><span class="sidebar-icon">📞</span><span id="sidebar-phone">—</span></div>
+    <div class="sidebar-detail"><span class="sidebar-icon">👤</span><span id="sidebar-role-label">—</span></div>
+  </div>
+  <hr class="sidebar-divider">
+  <div class="sidebar-actions">
+    <a href="my-reports.html" class="sidebar-link">🚨 My Reports</a>
+    <a href="my-adoptions.html" class="sidebar-link" id="sidebar-adoptions-link">🐾 My Adoptions</a>
+    <a href="admin.html" class="sidebar-link" id="sidebar-dashboard-link" style="display:none;">⚙️ Admin Dashboard</a>
+    <button class="sidebar-logout" onclick="logout()">🚪 Log Out</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const username = localStorage.getItem('username');
+  const role     = localStorage.getItem('role');
+
+  if (!username) {
+    alert('Please log in to report an animal.');
+    window.location.href = 'index.html';
+    return;
+  }
+
+  showProfileState(username, role);
+
+  document.getElementById('report-name').value  = username;
+  document.getElementById('report-email').value = localStorage.getItem('email')  || '';
+  document.getElementById('report-phone').value = localStorage.getItem('phone')  || '';
+});
+
+function previewReportImage(input) {
+  const preview = document.getElementById('report-img-preview');
+  if (input.files && input.files[0]) {
+    preview.src = URL.createObjectURL(input.files[0]);
+    preview.style.display = 'block';
+  }
+}
+
+function detectLocation() {
+  if (!navigator.geolocation) {
+    alert('Geolocation is not supported by your browser.');
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      const { latitude, longitude } = pos.coords;
+      try {
+        const res  = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+        const data = await res.json();
+        const addr = data.display_name || `${latitude}, ${longitude}`;
+        document.getElementById('report-location').value = addr;
+        document.getElementById('location-detected').style.display = 'block';
+      } catch {
+        document.getElementById('report-location').value = `${latitude}, ${longitude}`;
+        document.getElementById('location-detected').style.display = 'block';
+      }
+    },
+    () => alert('Could not detect location. Please enter it manually.')
+  );
+}
+
+document.getElementById('reportForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const msgEl     = document.getElementById('report-msg');
+  const submitBtn = document.getElementById('report-submit-btn');
+  const userId    = localStorage.getItem('userId');
+
+  submitBtn.disabled = true;
+  msgEl.style.color  = '#888';
+  msgEl.textContent  = '⏳ Submitting report...';
+
+  const formData = new FormData();
+  formData.append('user_id',     userId || '');
+  formData.append('user_name',   document.getElementById('report-name').value.trim());
+  formData.append('user_email',  document.getElementById('report-email').value.trim());
+  formData.append('user_phone',  document.getElementById('report-phone').value.trim());
+  formData.append('animal_type', document.getElementById('report-animal-type').value);
+  formData.append('description', document.getElementById('report-description').value.trim());
+  formData.append('location',    document.getElementById('report-location').value.trim());
+
+  const imgFile = document.getElementById('report-image').files[0];
+  if (imgFile) formData.append('image', imgFile);
+
+  try {
+    const res  = await fetch('http://localhost:5000/api/reports', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      msgEl.style.color = '#2e7d32';
+      msgEl.textContent = '✅ Report submitted! Our NGO partners will respond shortly.';
+      document.getElementById('reportForm').reset();
+      document.getElementById('report-img-preview').style.display = 'none';
+      document.getElementById('location-detected').style.display  = 'none';
+
+      setTimeout(() => {
+        window.location.href = 'my-reports.html';
+      }, 1500);
+    } else {
+      msgEl.style.color = '#c62828';
+      msgEl.textContent = '❌ ' + (data.error || 'Failed to submit report');
+      submitBtn.disabled = false;
+    }
+  } catch (err) {
+    msgEl.style.color = '#c62828';
+    msgEl.textContent = '❌ Cannot reach server.';
+    submitBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

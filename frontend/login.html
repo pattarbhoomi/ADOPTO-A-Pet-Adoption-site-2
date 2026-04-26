@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Adopto</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="index.html">
+            <img src="images/logo.jpeg" style="width: 100px;">
+        </a>
+
+        <!-- THIS BUTTON OPENS MODAL -->
+        <div class="d-flex">
+            <button class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#login-modal">
+                Log In / Sign Up
+            </button>
+        </div>
+
+    </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <h3>Welcome to Adopto 🐾</h3>
+</div>
+
+<!-- =========================
+     LOGIN / SIGNUP MODAL
+========================= -->
+<div class="modal fade" id="login-modal" tabindex="-1" aria-hidden="true">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- HEADER -->
+            <div class="modal-header">
+                <h5 class="modal-title">Login / Sign Up</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body">
+
+                <!-- LOGIN FORM -->
+                <form id="login-form">
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" class="form-control" id="login-email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <input type="password" class="form-control" id="login-password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        Login
+                    </button>
+                </form>
+
+                <hr>
+
+                <!-- SIGNUP FORM -->
+                <form id="signup-form">
+
+                    <div class="mb-3">
+                        <label>Name</label>
+                        <input type="text" class="form-control" id="signup-name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" class="form-control" id="signup-email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Phone</label>
+                        <input type="text" class="form-control" id="signup-phone" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <input type="password" class="form-control" id="signup-password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">
+                        Sign Up
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal fade" id="profile-modal" tabindex="-1" aria-hidden="true">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">My Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p><strong>Email:</strong> <span id="profile-email-display"></span></p>
+                <p><strong>Phone:</strong> <span id="profile-phone-display"></span></p>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="logout-btn">Logout</button>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- =========================
+     SCRIPTS
+========================= -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="api.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

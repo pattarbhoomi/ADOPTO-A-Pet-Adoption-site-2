@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Adoptions - Adopto</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #fdf8f0; }
+
+    .page-wrap {
+      max-width: 820px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    /* ── Empty state ── */
+    .empty-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+    }
+
+    .empty-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 50px 40px;
+      text-align: center;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    }
+
+    .empty-card .empty-icon { font-size: 4rem; margin-bottom: 16px; display: block; }
+    .empty-card h3 { font-size: 1.5rem; font-weight: 700; color: #333; margin-bottom: 10px; }
+    .empty-card p  { color: #888; font-size: 1rem; margin-bottom: 28px; line-height: 1.6; }
+
+    .btn-browse {
+      display: inline-block;
+      background: #f9a826;
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-browse:hover { background: #e0930f; color: #fff; }
+
+    /* ── Adoption card ── */
+    .adoption-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      border-left: 5px solid #f9a826;
+    }
+    .adoption-card.approved { border-left-color: #4caf50; }
+    .adoption-card.rejected { border-left-color: #f44336; }
+    .adoption-card.pending  { border-left-color: #f9a826; }
+
+    .card-top {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    .card-top img {
+      width: 100px;
+      height: 100px;
+      border-radius: 14px;
+      object-fit: cover;
+      border: 3px solid #f9a826;
+      flex-shrink: 0;
+    }
+    .adoption-card.approved .card-top img { border-color: #4caf50; }
+    .adoption-card.rejected .card-top img { border-color: #f44336; }
+
+    .card-info { flex: 1; }
+
+    .pet-name-big {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .pet-meta-small {
+      font-size: 0.88rem;
+      color: #888;
+      margin-bottom: 10px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 16px;
+      border-radius: 99px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .status-pill.pending  { background: #fff3e6; color: #b55a02; }
+    .status-pill.approved { background: #e8f9ee; color: #247a3e; }
+    .status-pill.rejected { background: #ffe8e8; color: #c62828; }
+
+    .submitted-on {
+      font-size: 0.82rem;
+      color: #aaa;
+      margin-top: 2px;
+    }
+
+    /* Admin note */
+    .admin-note {
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: #fdf8f0;
+      border-left: 3px solid #f9a826;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #555;
+      line-height: 1.5;
+    }
+    .admin-note.rejected {
+      background: #fff5f5;
+      border-left-color: #f44336;
+    }
+    .admin-note strong { color: #333; }
+
+    /* Congrats banner */
+    .congrats-banner {
+      margin-top: 18px;
+      background: linear-gradient(135deg, #e8f9ee, #f0fff4);
+      border: 2px solid #4caf50;
+      border-radius: 14px;
+      padding: 20px 24px;
+      text-align: center;
+    }
+    .congrats-banner h4 {
+      color: #247a3e;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+    }
+    .congrats-banner p {
+      color: #555;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+    .cert-btn {
+      display: inline-block;
+      background: #f9a826;
+      color: #fff;
+      padding: 10px 26px;
+      border-radius: 25px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .cert-btn:hover { background: #e0930f; color: #fff; }
+
+    /* Loader */
+    .loader {
+      text-align: center;
+      padding: 60px;
+      color: #aaa;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid">
+  <header>
+    <div class="logo">
+      <img src="images/logo.jpeg" alt="Adopto Logo" class="logo-img">
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="adoption.html">Adopt</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="auth-buttons">
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#login-modal">
+        Log In / Sign Up
+      </button>
+      <a href="#" class="profile-btn" onclick="openSidebar(); return false;" style="display:none;">Profile</a>
+    </div>
+  </header>
+
+  <div class="page-wrap">
+    <h2 class="page-title">🐾 My Adoptions</h2>
+    <div id="adoptions-list"><div class="loader">⏳ Loading your adoptions...</div></div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+<div id="profile-sidebar">
+  <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+  <div class="sidebar-pfp-wrap">
+    <div class="sidebar-avatar">
+      <img id="sidebar-pfp" src="" alt="Profile" style="display:none;">
+      <span id="sidebar-initials"></span>
+    </div>
+    <label class="pfp-upload-btn" title="Change photo">
+      📷
+      <input type="file" accept="image/*" style="display:none;" onchange="handlePfpUpload(this)">
+    </label>
+  </div>
+  <div class="sidebar-info">
+    <div class="sidebar-name" id="sidebar-username">—</div>
+    <div id="sidebar-admin-badge" style="display:none; margin-bottom:10px;">
+      <span style="background:#f9a826;color:#fff;font-size:0.78rem;font-weight:700;padding:3px 12px;border-radius:99px;">🛡️ ADMIN</span>
+    </div>
+    <div class="sidebar-detail"><span class="sidebar-icon">✉️</span><span id="sidebar-email">—</span></div>
+    <div class="sidebar-detail"><span class="sidebar-icon">📞</span><span id="sidebar-phone">—</span></div>
+    <div class="sidebar-detail"><span class="sidebar-icon">👤</span><span id="sidebar-role-label">—</span></div>
+  </div>
+  <hr class="sidebar-divider">
+  <div class="sidebar-actions">
+    <a href="my-adoptions.html" class="sidebar-link" id="sidebar-adoptions-link">🐾 My Adoptions</a>
+    <a href="admin.html" class="sidebar-link" id="sidebar-dashboard-link" style="display:none;">⚙️ Admin Dashboard</a>
+    <button class="sidebar-logout" onclick="logout()">🚪 Log Out</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+<script>
+
+
+window.addEventListener('DOMContentLoaded', async () => {
+  const username = localStorage.getItem('username');
+  const role     = localStorage.getItem('role');
+  const userId   = localStorage.getItem('userId');
+  const list     = document.getElementById('adoptions-list');
+
+  if (!username) {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  showProfileState(username, role);
+
+  // No userId stored — show empty
+  if (!userId) {
+    list.innerHTML = emptyState();
+    return;
+  }
+
+  try {
+    const res  = await fetch(`${API}/api/adoptions/user/${userId}`);
+    const data = await res.json();
+
+    if (!data || data.length === 0) {
+      list.innerHTML = emptyState();
+      return;
+    }
+
+    list.innerHTML = data.map(a => {
+      const imgSrc    = a.image_url || 'images/logo.jpeg';
+      const appliedOn = new Date(a.application_date).toLocaleString('en-IN', {
+        day: 'numeric', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+
+      const certUrl = `certificate.html` +
+        `?pet=${encodeURIComponent(a.pet_name || '')}` +
+        `&adopter=${encodeURIComponent(a.name || '')}` +
+        `&image=${encodeURIComponent(imgSrc)}` +
+        `&date=${encodeURIComponent(new Date(a.application_date).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}))}`;
+
+      const petMeta = [a.pet_breed, a.pet_type, a.pet_age ? a.pet_age + ' yr' : '']
+        .filter(Boolean).join(' · ');
+
+      return `
+        <div class="adoption-card ${a.status}">
+          <div class="card-top">
+            <img src="${imgSrc}" alt="${a.pet_name}" onerror="this.src='images/logo.jpeg'">
+            <div class="card-info">
+              <div class="pet-name-big">${a.pet_name || 'Pet'}</div>
+              <div class="pet-meta-small">${petMeta || '—'}</div>
+              <span class="status-pill ${a.status}">
+                ${a.status === 'pending'  ? '⏳ Pending Review' : ''}
+                ${a.status === 'approved' ? '✅ Approved'       : ''}
+                ${a.status === 'rejected' ? '❌ Rejected'       : ''}
+              </span>
+              <div class="submitted-on">📅 Submitted: ${appliedOn}</div>
+            </div>
+          </div>
+
+          ${a.admin_note ? `
+          <div class="admin-note ${a.status === 'rejected' ? 'rejected' : ''}">
+            <strong>Note from Adopto:</strong> ${a.admin_note}
+          </div>` : ''}
+
+          ${a.status === 'approved' ? `
+          <div class="congrats-banner">
+            <h4>🎉 Congratulations, ${a.name}!</h4>
+            <p>Your adoption of <strong>${a.pet_name}</strong> has been approved!<br>Welcome to the family! 🐾</p>
+            <a href="${certUrl}" class="cert-btn" target="_blank">🏆 Download Certificate</a>
+          </div>` : ''}
+        </div>
+      `;
+    }).join('');
+
+  } catch (err) {
+    console.error(err);
+    list.innerHTML = `
+      <div class="empty-card" style="margin:0 auto;">
+        <span class="empty-icon">⚠️</span>
+        <h3>Something went wrong</h3>
+        <p>Could not load your adoptions. Please try again later.</p>
+      </div>`;
+  }
+});
+
+function emptyState() {
+  return `
+    <div class="empty-wrap">
+      <div class="empty-card">
+        <span class="empty-icon">🐾</span>
+        <h3>Hey! It seems like you have not adopted any of our pets yet...</h3>
+        <p>Browse our adorable pets and submit an adoption application to give a fur baby a forever home!</p>
+        <a href="adoption.html" class="btn-browse">Browse Pets 🐾</a>
+      </div>
+    </div>`;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGO Dashboard - Adopto</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { display: flex; height: 100vh; background: #f5f5f5; font-family: system-ui, sans-serif; }
+
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(135deg, #2e7d32, #4caf50);
+      color: white;
+      padding: 30px 0;
+      min-height: 100vh;
+      position: fixed; left: 0; top: 0;
+      overflow-y: auto; z-index: 100;
+    }
+
+    .sidebar-brand { padding: 0 20px; margin-bottom: 10px; }
+    .sidebar-brand h2 { font-size: 1.5rem; font-weight: 700; margin: 0; }
+
+    .sidebar-ngo-info {
+      padding: 10px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      margin-bottom: 10px;
+    }
+
+    .sidebar-ngo-avatar {
+      width: 50px; height: 50px; border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin-bottom: 8px;
+      border: 2px solid rgba(255,255,255,0.6);
+    }
+
+    .sidebar-ngo-name { font-weight: 700; font-size: 0.95rem; }
+    .sidebar-ngo-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.25);
+      font-size: 0.72rem; font-weight: 700;
+      padding: 2px 10px; border-radius: 99px;
+      letter-spacing: 0.06em; margin-top: 4px;
+    }
+
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav li a {
+      display: block; padding: 14px 25px;
+      color: white; text-decoration: none; cursor: pointer;
+      transition: all 0.3s; border-left: 4px solid transparent;
+      font-weight: 500;
+    }
+    .sidebar-nav li a:hover,
+    .sidebar-nav li a.active {
+      background: rgba(0,0,0,0.15);
+      border-left-color: white;
+      padding-left: 35px;
+    }
+
+    .main-content { margin-left: 260px; flex: 1; overflow-y: auto; padding: 30px; }
+
+    .dash-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 30px; background: white;
+      padding: 25px; border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    .dash-header h1 { margin: 0; font-size: 2rem; color: #333; }
+
+    .logout-btn {
+      background: linear-gradient(90deg, #2e7d32, #4caf50);
+      color: white; border: none; padding: 12px 25px;
+      border-radius: 8px; cursor: pointer; font-weight: 700;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px; margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white; padding: 25px; border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      text-align: center; transition: transform 0.3s;
+    }
+    .stat-card:hover { transform: translateY(-5px); }
+    .stat-card h3 { color: #4caf50; font-size: 2.5rem; margin: 0; font-weight: 700; }
+    .stat-card p  { color: #666; margin: 10px 0 0; font-weight: 500; }
+
+    .report-card {
+      background: white; border-left: 4px solid #f9a826;
+      border-radius: 12px; padding: 20px; margin-bottom: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+    }
+    .report-card.acknowledged { border-left-color: #4caf50; }
+    .report-card.resolved     { border-left-color: #2196f3; }
+
+    .report-header {
+      display: flex; justify-content: space-between;
+      align-items: start; margin-bottom: 14px;
+    }
+    .report-header h4 { margin: 0; color: #333; font-weight: 600; }
+    .report-meta { color: #999; font-size: 0.88rem; margin-top: 4px; }
+
+    .status-badge { padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+    .status-pending      { background: #fff3e6; color: #b55a02; }
+    .status-acknowledged { background: #e8f9ee; color: #247a3e; }
+    .status-resolved     { background: #e8eeff; color: #1a3eb5; }
+
+    .report-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px; margin: 12px 0;
+    }
+
+    .detail-box { background: #f9f9f9; padding: 10px 14px; border-radius: 8px; }
+    .detail-box strong { color: #333; display: block; font-size: 0.85rem; margin-bottom: 3px; }
+    .detail-box p { color: #666; font-size: 0.88rem; margin: 0; }
+
+    .report-img {
+      width: 100px; height: 100px;
+      border-radius: 10px; object-fit: cover;
+      border: 2px solid #f9a826; margin-top: 10px;
+    }
+
+    .ack-form { margin-top: 14px; }
+    .ack-textarea {
+      width: 100%; padding: 10px 14px;
+      border: 1px solid #ddd; border-radius: 8px;
+      font-family: inherit; font-size: 0.9rem;
+      resize: vertical; min-height: 70px;
+      margin-bottom: 10px;
+    }
+    .ack-textarea:focus { border-color: #4caf50; outline: none; }
+
+    .btn-ack {
+      background: #4caf50; color: white;
+      border: none; padding: 9px 18px;
+      border-radius: 8px; cursor: pointer;
+      font-weight: 600; font-size: 0.9rem;
+      margin-right: 8px; transition: all 0.2s;
+    }
+    .btn-ack:hover { background: #388e3c; }
+
+    .btn-resolve {
+      background: #2196f3; color: white;
+      border: none; padding: 9px 18px;
+      border-radius: 8px; cursor: pointer;
+      font-weight: 600; font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .btn-resolve:hover { background: #1565c0; }
+
+    .ngo-msg-sent {
+      margin-top: 10px; padding: 10px 14px;
+      background: #e8f9ee; border-left: 3px solid #4caf50;
+      border-radius: 8px; font-size: 0.88rem; color: #333;
+    }
+
+    /* Submit Pet form */
+    .submit-pet-form {
+      background: white; padding: 35px; border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08); max-width: 650px;
+    }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; margin-bottom: 7px; font-weight: 600; color: #333; }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%; padding: 11px 13px;
+      border: 1px solid #ddd; border-radius: 8px;
+      font-size: 0.95rem; font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { border-color: #4caf50; outline: none; }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+
+    .vacc-group { display: flex; flex-direction: column; gap: 10px; }
+    .vacc-check {
+      display: flex; align-items: center; gap: 10px;
+      background: #f1f8f1; padding: 10px 14px;
+      border-radius: 8px; cursor: pointer;
+    }
+    .vacc-check input { width: auto; margin: 0; }
+    .vacc-check label { margin: 0; font-size: 0.9rem; }
+    .vacc-info { font-size: 0.78rem; color: #999; margin-top: 2px; }
+
+    .image-preview-wrap { margin-top: 10px; }
+    .image-preview-wrap img {
+      width: 120px; height: 100px; object-fit: cover;
+      border-radius: 8px; border: 2px solid #4caf50; display: none;
+    }
+
+    .btn-submit-pet {
+      background: linear-gradient(90deg, #2e7d32, #4caf50);
+      color: white; padding: 12px 28px;
+      border: none; border-radius: 8px;
+      cursor: pointer; font-weight: 700; font-size: 1rem;
+      transition: transform 0.2s;
+    }
+    .btn-submit-pet:hover { transform: translateY(-2px); }
+
+    .submitted-pets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .submitted-pet-card {
+      background: white; border-radius: 14px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .submitted-pet-card img {
+      width: 100%; height: 180px; object-fit: cover;
+    }
+
+    .submitted-pet-body { padding: 14px; }
+    .submitted-pet-name { font-size: 1.1rem; font-weight: 700; color: #333; margin-bottom: 4px; }
+    .submitted-pet-meta { font-size: 0.85rem; color: #888; margin-bottom: 10px; }
+
+    .pet-status-tag {
+      display: inline-block; font-size: 0.78rem; font-weight: 700;
+      padding: 3px 12px; border-radius: 99px; margin-bottom: 8px;
+    }
+    .pet-status-pending  { background: #fff3e6; color: #b55a02; }
+    .pet-status-approved { background: #e8f9ee; color: #247a3e; }
+    .pet-status-rejected { background: #ffe8e8; color: #c62828; }
+
+    .admin-note-box {
+      font-size: 0.82rem; color: #555; padding: 8px 12px;
+      background: #fdf8f0; border-radius: 6px; margin-top: 8px;
+    }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: #999; }
+    .empty-state h3 { color: #666; margin-bottom: 10px; }
+    .section-title { font-size: 1.6rem; font-weight: 700; color: #333; margin-bottom: 24px; }
+
+    .toast-msg {
+      position: fixed; bottom: 30px; right: 30px;
+      background: #333; color: white;
+      padding: 14px 24px; border-radius: 10px;
+      font-weight: 500; z-index: 9999;
+      opacity: 0; transform: translateY(20px);
+      transition: all 0.3s; pointer-events: none;
+    }
+    .toast-msg.show { opacity: 1; transform: translateY(0); }
+    .toast-msg.success { background: #2e7d32; }
+    .toast-msg.error   { background: #c62828; }
+  </style>
+</head>
+<body>
+
+<!-- NGO Login Screen (shown if not logged in) -->
+<div id="ngo-login-screen" style="display:none; position:fixed; inset:0; background:#f5f5f5; z-index:9999; display:flex; align-items:center; justify-content:center;">
+  <div style="background:#fff; border-radius:20px; padding:40px; max-width:400px; width:100%; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+    <h2 style="text-align:center; color:#2e7d32; margin-bottom:24px;">🌿 NGO Login</h2>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="ngo-login-email" placeholder="NGO email address">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="ngo-login-password" placeholder="Password">
+    </div>
+    <div id="ngo-login-msg" style="font-size:0.9rem; margin-bottom:10px; color:#c62828;"></div>
+    <button onclick="ngoLogin()" style="width:100%; padding:14px; background:linear-gradient(90deg,#2e7d32,#4caf50); color:#fff; border:none; border-radius:10px; font-size:1rem; font-weight:700; cursor:pointer;">
+      Log In
+    </button>
+  </div>
+</div>
+
+<!-- NGO Dashboard -->
+<div id="ngo-dashboard" style="display:none; width:100%;">
+
+  <div class="sidebar">
+    <div class="sidebar-brand"><h2>🌿 NGO Portal</h2></div>
+    <div class="sidebar-ngo-info">
+      <div class="sidebar-ngo-avatar">🌿</div>
+      <div class="sidebar-ngo-name" id="ngo-name-display">NGO</div>
+      <span class="sidebar-ngo-badge">NGO PARTNER</span>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a onclick="switchNgoSection('ngo-overview', this)" class="active">📊 Overview</a></li>
+      <li><a onclick="switchNgoSection('ngo-reports', this)">🚨 Animal Reports</a></li>
+      <li><a onclick="switchNgoSection('ngo-submit-pet', this)">➕ Submit Pet for Adoption</a></li>
+      <li><a onclick="switchNgoSection('ngo-my-submissions', this)">📋 My Submissions</a></li>
+      <li style="margin-top:40px;"><a onclick="ngoLogout()">🚪 Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <div class="dash-header">
+      <h1 id="ngo-section-heading">📊 Overview</h1>
+      <button class="logout-btn" onclick="ngoLogout()">Logout</button>
+    </div>
+
+    <!-- Overview -->
+    <div id="ngo-overview" class="section active">
+      <div class="stats-container">
+        <div class="stat-card"><h3 id="ngo-total-reports">0</h3><p>Total Reports</p></div>
+        <div class="stat-card"><h3 id="ngo-pending-reports">0</h3><p>Pending</p></div>
+        <div class="stat-card"><h3 id="ngo-ack-reports">0</h3><p>Acknowledged</p></div>
+        <div class="stat-card"><h3 id="ngo-submissions">0</h3><p>Pets Submitted</p></div>
+      </div>
+    </div>
+
+    <!-- Animal Reports -->
+    <div id="ngo-reports" class="section">
+      <p class="section-title">🚨 Animal Reports</p>
+      <div id="ngo-reports-container"></div>
+    </div>
+
+    <!-- Submit Pet -->
+    <div id="ngo-submit-pet" class="section">
+      <p class="section-title">➕ Submit Pet for Adoption</p>
+      <div class="submit-pet-form">
+        <form id="ngo-pet-form" onsubmit="submitNgoPet(event)">
+          <div class="form-group">
+            <label>Link to Report (optional)</label>
+            <select id="ngo-report-link">
+              <option value="">Not linked to a report</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Pet Name *</label><input type="text" id="ngo-pet-name" required></div>
+          <div class="form-group"><label>Type (Dog / Cat / Bird...)</label><input type="text" id="ngo-pet-type"></div>
+          <div class="form-group"><label>Breed</label><input type="text" id="ngo-pet-breed"></div>
+          <div class="form-group"><label>Age (years)</label><input type="number" id="ngo-pet-age" min="0"></div>
+          <div class="form-group"><label>Temperament</label><input type="text" id="ngo-pet-temperament" placeholder="e.g. Friendly, Calm"></div>
+          <div class="form-group"><label>Description / Backstory *</label><textarea id="ngo-pet-desc" required></textarea></div>
+          <div class="form-group">
+            <label>Vaccinations Given</label>
+            <div class="vacc-group">
+              <label class="vacc-check">
+                <input type="checkbox" id="ngo-vacc-rabies">
+                <div><div>Rabies</div><div class="vacc-info">Essential for all strays</div></div>
+              </label>
+              <label class="vacc-check">
+                <input type="checkbox" id="ngo-vacc-distemper">
+                <div><div>Distemper (DHPPi)</div><div class="vacc-info">Covers multiple diseases</div></div>
+              </label>
+              <label class="vacc-check">
+                <input type="checkbox" id="ngo-vacc-parvovirus">
+                <div><div>Parvovirus</div><div class="vacc-info">Critical for puppies & strays</div></div>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Pet Photo *</label>
+            <input type="file" id="ngo-pet-image" accept="image/*" required onchange="previewNgoPetImage(this)">
+            <div class="image-preview-wrap"><img id="ngo-pet-img-preview" src="" alt="Preview"></div>
+          </div>
+          <div id="ngo-pet-msg" style="font-size:0.9rem; margin-bottom:12px;"></div>
+          <button type="submit" class="btn-submit-pet">✅ Submit to Admin for Approval</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- My Submissions -->
+    <div id="ngo-my-submissions" class="section">
+      <p class="section-title">📋 My Pet Submissions</p>
+      <div class="submitted-pets-grid" id="ngo-submissions-grid"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast-msg" id="ngo-toast"></div>
+
+<script>
+const API     = 'http://localhost:5000';
+let   ngoData = {};
+
+// ── Check session ──
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = sessionStorage.getItem('ngoData');
+  if (saved) {
+    ngoData = JSON.parse(saved);
+    showNgoDashboard();
+  } else {
+    document.getElementById('ngo-login-screen').style.display = 'flex';
+    document.getElementById('ngo-dashboard').style.display    = 'none';
+  }
+});
+
+// ── NGO Login ──
+async function ngoLogin() {
+  const email    = document.getElementById('ngo-login-email').value.trim();
+  const password = document.getElementById('ngo-login-password').value;
+  const msgEl    = document.getElementById('ngo-login-msg');
+
+  if (!email || !password) { msgEl.textContent = '❌ Please enter email and password.'; return; }
+
+  try {
+    const res  = await fetch(`${API}/api/ngo/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      ngoData = data;
+      sessionStorage.setItem('ngoData', JSON.stringify(data));
+      showNgoDashboard();
+    } else {
+      msgEl.textContent = '❌ ' + (data.error || 'Login failed');
+    }
+  } catch (err) {
+    msgEl.textContent = '❌ Cannot reach server.';
+  }
+}
+
+function showNgoDashboard() {
+  document.getElementById('ngo-login-screen').style.display = 'none';
+  document.getElementById('ngo-dashboard').style.display    = 'flex';
+  document.getElementById('ngo-name-display').textContent   = ngoData.name || 'NGO';
+  loadNgoOverview();
+  loadReportDropdown();
+}
+
+function ngoLogout() {
+  sessionStorage.removeItem('ngoData');
+  window.location.reload();
+}
+
+// ── Section switcher ──
+const ngoHeadings = {
+  'ngo-overview'      : '📊 Overview',
+  'ngo-reports'       : '🚨 Animal Reports',
+  'ngo-submit-pet'    : '➕ Submit Pet for Adoption',
+  'ngo-my-submissions': '📋 My Pet Submissions',
+};
+
+function switchNgoSection(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav li a').forEach(a => a.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('ngo-section-heading').textContent = ngoHeadings[id] || '';
+
+  if (id === 'ngo-overview')       loadNgoOverview();
+  if (id === 'ngo-reports')        loadNgoReports();
+  if (id === 'ngo-my-submissions') loadNgoSubmissions();
+}
+
+function showNgoToast(msg, type = 'success') {
+  const t = document.getElementById('ngo-toast');
+  t.textContent = msg;
+  t.className = `toast-msg ${type} show`;
+  setTimeout(() => t.className = 'toast-msg', 3000);
+}
+
+// ── Overview stats ──
+async function loadNgoOverview() {
+  try {
+    const [reports, submissions] = await Promise.all([
+      fetch(`${API}/api/ngo/reports`).then(r => r.json()),
+      fetch(`${API}/api/ngo/pets`).then(r => r.json())
+    ]);
+    document.getElementById('ngo-total-reports').textContent   = reports.length;
+    document.getElementById('ngo-pending-reports').textContent = reports.filter(r => r.status === 'pending').length;
+    document.getElementById('ngo-ack-reports').textContent     = reports.filter(r => r.status === 'acknowledged').length;
+    document.getElementById('ngo-submissions').textContent     = submissions.filter(s => s.ngo_id === ngoData.id).length;
+  } catch (err) { console.error(err); }
+}
+
+// ── Load reports ──
+async function loadNgoReports() {
+  const container = document.getElementById('ngo-reports-container');
+  try {
+    const reports = await fetch(`${API}/api/ngo/reports`).then(r => r.json());
+
+    if (reports.length === 0) {
+      container.innerHTML = `<div class="empty-state"><h3>No reports yet</h3></div>`;
+      return;
+    }
+
+    container.innerHTML = reports.map((r, i) => `
+      <div class="report-card ${r.status}">
+        <div class="report-header">
+          <div>
+            <h4>${r.animal_type || 'Animal'} — ${r.user_name || 'User'}</h4>
+            <p class="report-meta">📍 ${r.location} · 📅 ${new Date(r.reported_at).toLocaleDateString()}</p>
+          </div>
+          <span class="status-badge status-${r.status}">${r.status.toUpperCase()}</span>
+        </div>
+
+        ${r.image_url ? `<img src="${r.image_url}" class="report-img" alt="Animal" onerror="this.style.display='none'">` : ''}
+
+        <div class="report-details">
+          <div class="detail-box"><strong>Reporter</strong><p>${r.user_name || 'N/A'} · ${r.user_phone || ''}</p></div>
+          <div class="detail-box"><strong>Email</strong><p>${r.user_email || 'N/A'}</p></div>
+        </div>
+
+        <div class="detail-box" style="margin-bottom:12px;">
+          <strong>Description</strong>
+          <p>${r.description || 'N/A'}</p>
+        </div>
+
+        ${r.ngo_message ? `
+        <div class="ngo-msg-sent">
+          <strong>✅ Your message sent:</strong> ${r.ngo_message}
+        </div>` : ''}
+
+        ${r.status === 'pending' ? `
+        <div class="ack-form">
+          <textarea class="ack-textarea" id="ack-msg-${i}"
+            placeholder="Write a message to the user (e.g. 'We have received your report and our team will visit within 24 hours.')"></textarea>
+          <button class="btn-ack" onclick="acknowledgeReport(${r.id}, ${i})">✅ Acknowledge</button>
+        </div>` : ''}
+
+        ${r.status === 'acknowledged' ? `
+        <button class="btn-resolve" onclick="resolveReport(${r.id})" style="margin-top:10px;">
+          🔵 Mark as Resolved
+        </button>` : ''}
+      </div>
+    `).join('');
+
+  } catch (err) {
+    container.innerHTML = `<div class="empty-state"><h3>Error loading reports</h3></div>`;
+  }
+}
+
+async function acknowledgeReport(reportId, index) {
+  const msg = document.getElementById(`ack-msg-${index}`).value.trim()
+    || 'We have received your report and will look into it shortly. Thank you for caring! 🐾';
+
+  try {
+    const res = await fetch(`${API}/api/ngo/reports/${reportId}/acknowledge`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ngo_id: ngoData.id, ngo_message: msg })
+    });
+    if (res.ok) {
+      showNgoToast('Report acknowledged! User has been notified. ✅');
+      loadNgoReports();
+      loadNgoOverview();
+    } else {
+      showNgoToast('Failed to acknowledge', 'error');
+    }
+  } catch (err) {
+    showNgoToast('Cannot reach server', 'error');
+  }
+}
+
+async function resolveReport(reportId) {
+  try {
+    const res = await fetch(`${API}/api/ngo/reports/${reportId}/resolve`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (res.ok) {
+      showNgoToast('Report marked as resolved 🔵');
+      loadNgoReports();
+      loadNgoOverview();
+    }
+  } catch (err) {
+    showNgoToast('Cannot reach server', 'error');
+  }
+}
+
+// ── Report dropdown for pet submission ──
+async function loadReportDropdown() {
+  try {
+    const reports = await fetch(`${API}/api/ngo/reports`).then(r => r.json());
+    const select  = document.getElementById('ngo-report-link');
+    const acked   = reports.filter(r => r.status === 'acknowledged' || r.status === 'resolved');
+    acked.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r.id;
+      opt.textContent = `#${r.id} — ${r.animal_type || 'Animal'} at ${r.location.substring(0, 40)}`;
+      select.appendChild(opt);
+    });
+  } catch (err) { console.error(err); }
+}
+
+// ── Submit pet ──
+function previewNgoPetImage(input) {
+  const preview = document.getElementById('ngo-pet-img-preview');
+  if (input.files && input.files[0]) {
+    preview.src = URL.createObjectURL(input.files[0]);
+    preview.style.display = 'block';
+  }
+}
+
+async function submitNgoPet(e) {
+  e.preventDefault();
+  const msgEl = document.getElementById('ngo-pet-msg');
+  msgEl.textContent = '';
+
+  const formData = new FormData();
+  formData.append('ngo_id',               ngoData.id);
+  formData.append('ngo_name',             ngoData.name);
+  formData.append('name',                 document.getElementById('ngo-pet-name').value.trim());
+  formData.append('type',                 document.getElementById('ngo-pet-type').value.trim());
+  formData.append('breed',                document.getElementById('ngo-pet-breed').value.trim());
+  formData.append('age',                  document.getElementById('ngo-pet-age').value);
+  formData.append('temperament',          document.getElementById('ngo-pet-temperament').value.trim());
+  formData.append('description',          document.getElementById('ngo-pet-desc').value.trim());
+  formData.append('vaccinated_rabies',    document.getElementById('ngo-vacc-rabies').checked);
+  formData.append('vaccinated_distemper', document.getElementById('ngo-vacc-distemper').checked);
+  formData.append('vaccinated_parvovirus',document.getElementById('ngo-vacc-parvovirus').checked);
+  formData.append('report_id',            document.getElementById('ngo-report-link').value || '');
+  formData.append('image',                document.getElementById('ngo-pet-image').files[0]);
+
+  try {
+    msgEl.style.color = '#888';
+    msgEl.textContent = '⏳ Submitting...';
+
+    const res  = await fetch(`${API}/api/ngo/pets`, { method: 'POST', body: formData });
+    const data = await res.json();
+
+    if (res.ok) {
+      msgEl.style.color = '#2e7d32';
+      msgEl.textContent = '✅ Pet submitted to admin for approval!';
+      document.getElementById('ngo-pet-form').reset();
+      document.getElementById('ngo-pet-img-preview').style.display = 'none';
+      showNgoToast('Pet submitted successfully! 🐾');
+      loadNgoOverview();
+    } else {
+      msgEl.style.color = '#c62828';
+      msgEl.textContent = '❌ ' + (data.error || 'Failed to submit');
+    }
+  } catch (err) {
+    msgEl.style.color = '#c62828';
+    msgEl.textContent = '❌ Cannot reach server.';
+  }
+}
+
+// ── My Submissions ──
+async function loadNgoSubmissions() {
+  const grid = document.getElementById('ngo-submissions-grid');
+  try {
+    const pets = await fetch(`${API}/api/ngo/pets`).then(r => r.json());
+    const mine = pets.filter(p => p.ngo_id === ngoData.id);
+
+    if (mine.length === 0) {
+      grid.innerHTML = `<div class="empty-state"><h3>No submissions yet</h3><p>Submit a pet using the form above.</p></div>`;
+      return;
+    }
+
+    grid.innerHTML = mine.map(p => `
+      <div class="submitted-pet-card">
+        <img src="${p.image_url || ''}" alt="${p.name}" onerror="this.src='images/logo.jpeg'">
+        <div class="submitted-pet-body">
+          <div class="submitted-pet-name">${p.name}</div>
+          <div class="submitted-pet-meta">${p.type || ''} ${p.breed ? '· '+p.breed : ''}</div>
+          <span class="pet-status-tag pet-status-${p.status}">
+            ${p.status === 'pending'  ? '⏳ Awaiting Admin Approval' : ''}
+            ${p.status === 'approved' ? '✅ Approved — Live on site!' : ''}
+            ${p.status === 'rejected' ? '❌ Rejected'                : ''}
+          </span>
+          ${p.admin_note ? `<div class="admin-note-box"><strong>Admin note:</strong> ${p.admin_note}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+  } catch (err) {
+    grid.innerHTML = `<div class="empty-state"><h3>Error loading submissions</h3></div>`;
+  }
+}
+</script>
+</body>
+</html>

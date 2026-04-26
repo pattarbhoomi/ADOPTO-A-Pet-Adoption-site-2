@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Adopto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+<div class="container-fluid">
+    <header>
+        <div class="logo">
+            <img src="images/logo.jpeg" alt="Adopto Logo" class="logo-img">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="adoption.html">Adopt</a></li>
+                <li><a href="about.html" class="active">About Us</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <button class="btn btn-primary" id="login-signup-btn" data-bs-toggle="modal" data-bs-target="#login-modal">
+                Log In / Sign Up
+            </button>
+            <!-- Profile avatar button (shown when logged in) -->
+            <a href="#" class="profile-btn" onclick="openSidebar(); return false;" title="My Profile" style="display:none;">
+                <img id="nav-pfp-img" src="" alt="" style="display:none;">
+                <span class="nav-initials" id="nav-initials"></span>
+            </a>
+        </div>
+    </header>
+ 
+    <main class="about-page">
+        <section class="why-adopt-section text-center py-5">
+            <div class="container">
+                <h2 class="mb-5 section-title">Why Adopt?</h2>
+                <div class="row align-items-center">
+                    <div class="col-md-8 text-md-start">
+                        <h3>Adopt, Don't Shop</h3>
+                        <p>When you adopt, you're not just giving a deserving pet a home. You're saving a life. Every year, millions of wonderful animals are euthanized because shelters are too full. By choosing adoption, you become a hero to one of them.</p>
+                        <a href="adoption.html" class="btn btn-primary">Meet Them Now</a>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <img src="images/logo.jpeg" alt="Adopto Logo" class="adopto-banner-logo">
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+        <section class="adopto-section py-5">
+            <div class="container">
+                <h2 class="text-center mb-5 section-title">Why Adopto?</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="adopto-item mb-4">
+                            <div class="adopto-letter">A</div>
+                            <div class="adopto-content"><h3>Adopt</h3><p>Change a life by giving a deserving pet a loving home. Adoption saves lives and enriches yours.</p></div>
+                        </div>
+                        <div class="adopto-item mb-4">
+                            <div class="adopto-letter">D</div>
+                            <div class="adopto-content"><h3>Donate</h3><p>Your contribution helps us provide food, shelter, and medical care to animals in need.</p></div>
+                        </div>
+                        <div class="adopto-item mb-4">
+                            <div class="adopto-letter">O</div>
+                            <div class="adopto-content"><h3>Oneness</h3><p>We are dedicated to rescuing, rehabilitating, and rehoming pets, creating a better world for animals.</p></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="adopto-item mb-4">
+                            <div class="adopto-letter">P</div>
+                            <div class="adopto-content"><h3>Protect</h3><p>We advocate for animal welfare and work to protect them from cruelty and neglect.</p></div>
+                        </div>
+                        <div class="adopto-item mb-4">
+                            <div class="adopto-letter">T</div>
+                            <div class="adopto-content"><h3>Together</h3><p>Join our community of animal lovers to make a collective impact and support each other.</p></div>
+                        </div>
+                        <div class="adopto-item mb-4">
+                            <div class="adopto-letter">O</div>
+                            <div class="adopto-content"><h3>Our Community</h3><p>Become part of a network that shares a passion for animal welfare and happy adoption stories.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+        <section class="our-mission-section text-center py-5">
+            <div class="container-fluid">
+                <h2 class="mb-5">Our Mission</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="mission-item">
+                            <i class="bi bi-eye-fill fs-1 text-primary"></i>
+                            <h3 class="mt-3">Vision</h3>
+                            <p>Our vision is a world where every pet has a safe, loving, and permanent home.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="mission-item">
+                            <i class="bi bi-bullseye fs-1 text-primary"></i>
+                            <h3 class="mt-3">Mission</h3>
+                            <p>Our mission is to rescue, rehabilitate, and rehome animals in need.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="mission-item">
+                            <i class="bi bi-gem fs-1 text-primary"></i>
+                            <h3 class="mt-3">Value</h3>
+                            <p>We value compassion, commitment, and community in everything we do.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+        <section class="helping-hands-section text-center py-5">
+            <div class="container">
+                <h2 class="mb-5 section-title">Helping Hands</h2>
+                <p class="lead mb-5">We're proud to work alongside other organizations dedicated to animal welfare in India.</p>
+ 
+                <!-- Saahas featured (full row) -->
+                <div class="row justify-content-center mb-4">
+                    <div class="col-lg-6 col-md-8">
+                        <div class="card h-100 saahas-featured-card">
+                            <span class="saahas-featured-badge">⭐ Our Primary Partner</span>
+                            <div class="card-body pt-4">
+                                <img
+                                    src="https://saahasforpune.org/wp-content/uploads/2021/01/saahas-logo.png"
+                                    alt="Saahas for Animals Logo"
+                                    class="saahas-logo"
+                                    onerror="this.style.display='none'">
+                                <h3 class="card-title" style="font-size:1.5rem;font-weight:700;color:#f9a826;">Saahas for Animals</h3>
+                                <p class="card-text" style="font-size:1rem;color:#555;margin-bottom:8px;">
+                                    A leading NGO in Pune dedicated to rescuing, feeding, and rehoming stray animals.
+                                    Saahas runs active rescue operations, adoption drives, and awareness campaigns across the city —
+                                    making a real, on-the-ground difference every single day.
+                                </p>
+                                <p style="font-size:0.88rem;color:#f9a826;font-weight:600;margin-bottom:16px;">📍 Pune, Maharashtra</p>
+                                <a href="https://saahasforpune.org/" target="_blank" class="btn btn-warning text-white fw-bold px-4">
+                                    Visit Saahas →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+ 
+                <!-- Other partner cards -->
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100"><div class="card-body">
+                            <h3 class="card-title">ResQ Charitable Trust</h3>
+                            <p class="card-text">ResQ is a Pune-based organization that provides medical care, shelter, and rehabilitation for injured and sick street animals.</p>
+                            <a href="https://www.resqct.org/" target="_blank" class="btn btn-outline-primary">Visit Website</a>
+                        </div></div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100"><div class="card-body">
+                            <h3 class="card-title">The Blue Cross Society of Pune</h3>
+                            <p class="card-text">Working for the welfare of animals since 1994, providing shelter, medical aid, and adoption services.</p>
+                            <a href="https://www.bluecrosssocietypune.org/" target="_blank" class="btn btn-outline-primary">Visit Website</a>
+                        </div></div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100"><div class="card-body">
+                            <h3 class="card-title">Karma Foundation</h3>
+                            <p class="card-text">A non-profit in Pune dedicated to animal welfare, focusing on rescue, adoption, and awareness.</p>
+                            <a href="https://karmafoundation.ngo/" target="_blank" class="btn btn-outline-primary">Visit Website</a>
+                        </div></div>
+                    </div>
+                </div>
+ 
+                <h3 class="text-center my-5 section-title">Helplines &amp; Emergency Services</h3>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100"><div class="card-body">
+                            <h3 class="card-title">Maharashtra Animal Welfare Board</h3>
+                            <p class="card-text">A government body monitoring animal welfare laws with a helpline for reporting cruelty.</p>
+                            <a href="https://dahd.maharashtra.gov.in/en/organization/maharashtra-animal-welfare-board/" target="_blank" class="btn btn-outline-primary">Visit Website</a>
+                        </div></div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100"><div class="card-body">
+                            <h3 class="card-title">Raintree Veterinary Clinic</h3>
+                            <p class="card-text">One of Pune's only 24-hour emergency veterinary clinics, providing critical care for pets.</p>
+                            <a href="https://www.raintreevet.in/emergency-and-critical-care/" target="_blank" class="btn btn-outline-primary">Visit Website</a>
+                        </div></div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100"><div class="card-body">
+                            <h3 class="card-title">Vetic Emergency Care</h3>
+                            <p class="card-text">Provides 24-hour emergency services for life-threatening cases for pets in Pune.</p>
+                            <a href="https://vetic.in/pet-emergency-care-pune" target="_blank" class="btn btn-outline-primary">Visit Website</a>
+                        </div></div>
+                    </div>
+                </div>
+ 
+                <h3 class="text-center my-5 section-title">More Shelters and Organizations</h3>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100"><div class="card-body">
+                            <h3 class="card-title">Mission Possible Foundation</h3>
+                            <p class="card-text">Provides shelter, medication, and adoption services for animals in need in Pune.</p>
+                            <a href="https://missionpossiblepune.org/" target="_blank" class="btn btn-outline-primary">Visit Website</a>
+                        </div></div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100"><div class="card-body">
+                            <h3 class="card-title">Petofy</h3>
+                            <p class="card-text">An online platform to find information about pet NGOs, shelters, and services in Pune.</p>
+                            <a href="https://petofy.com/pune/pet-ngos" target="_blank" class="btn btn-outline-primary">Visit Website</a>
+                        </div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+ 
+<!-- Login Modal -->
+<div class="modal fade" id="login-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Login / Sign Up</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="signupForm">
+                    <h2>Sign Up</h2>
+                    <input type="text" id="username" placeholder="Username" class="form-control mb-2" required>
+                    <input type="email" id="email" placeholder="Email" class="form-control mb-2" required>
+                    <input type="password" id="password" placeholder="Password" class="form-control mb-2" required>
+                    <input type="tel" id="phone" placeholder="Contact Number" class="form-control mb-2" required>
+                    <select id="role" class="form-control mb-2" required>
+                        <option value="" disabled selected>Select Role</option>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <div id="signup-msg" style="font-size:0.9rem;margin-bottom:8px;"></div>
+                    <button type="submit" class="btn btn-success w-100">Sign Up</button>
+                    <p class="form-switcher mt-2">Already have an account? <a href="#" id="show-login">Log In</a></p>
+                </form>
+                <form id="loginForm" style="display:none;">
+                    <h2>Log In</h2>
+                    <input type="text" id="loginUsername" placeholder="Username" class="form-control mb-2" required>
+                    <input type="password" id="loginPassword" placeholder="Password" class="form-control mb-2" required>
+                    <select id="loginRole" class="form-control mb-2" required>
+                        <option value="" disabled selected>Select Role</option>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <div id="login-msg" style="font-size:0.9rem;margin-bottom:8px;"></div>
+                    <div style="text-align:right;margin-bottom:8px;">
+                        <a href="#" onclick="openForgotModal();return false;" style="font-size:0.85rem;color:#f9a826;text-decoration:none;">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Log In</button>
+                    <p class="form-switcher mt-2">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<!-- Forgot Password Modal -->
+<div class="modal fade" id="forgot-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">🔑 Reset Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="fp-step1">
+                    <p style="color:#666;margin-bottom:16px;">Enter your registered email address.</p>
+                    <input type="email" id="fp-email" placeholder="Your email address" class="form-control mb-2">
+                    <div id="fp-msg1" style="font-size:0.9rem;margin-bottom:8px;"></div>
+                    <button class="btn w-100 fw-bold" onclick="sendOTP()" style="background:#f9a826;border:none;color:#fff;">Send OTP</button>
+                </div>
+                <div id="fp-step2" style="display:none;">
+                    <p style="color:#666;margin-bottom:16px;">OTP sent to <strong id="fp-email-display"></strong></p>
+                    <input type="text" id="fp-otp" placeholder="Enter OTP" class="form-control mb-2 text-center fw-bold" maxlength="6">
+                    <div id="fp-msg2" style="font-size:0.9rem;margin-bottom:8px;text-align:center;"></div>
+                    <button class="btn w-100 fw-bold mb-2" onclick="verifyOTP()" style="background:#f9a826;border:none;color:#fff;">Verify OTP</button>
+                    <button class="btn w-100" onclick="sendOTP(true)" style="background:transparent;border:1px solid #f9a826;color:#f9a826;font-size:0.9rem;">Resend OTP</button>
+                </div>
+                <div id="fp-step3" style="display:none;">
+                    <input type="password" id="fp-newpass" placeholder="New password" class="form-control mb-2">
+                    <input type="password" id="fp-confirmpass" placeholder="Confirm new password" class="form-control mb-2">
+                    <div id="fp-msg3" style="font-size:0.9rem;margin-bottom:8px;"></div>
+                    <button class="btn w-100 fw-bold" onclick="resetPassword()" style="background:#f9a826;border:none;color:#fff;">Reset Password</button>
+                </div>
+                <div id="fp-step4" style="display:none;text-align:center;padding:20px 0;">
+                    <div style="font-size:3rem;margin-bottom:16px;">✅</div>
+                    <h5 style="color:#2e7d32;margin-bottom:8px;">Password Reset!</h5>
+                    <button class="btn w-100 fw-bold" onclick="goToLogin()" style="background:#f9a826;border:none;color:#fff;">Go to Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<!-- Sidebar Overlay -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+ 
+<!-- Profile Sidebar -->
+<div id="profile-sidebar">
+    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+    <div class="sidebar-pfp-wrap">
+        <div class="sidebar-avatar">
+            <img id="sidebar-pfp" src="" alt="Profile" style="display:none;">
+            <span id="sidebar-initials"></span>
+        </div>
+        <label class="pfp-upload-btn" title="Change photo">
+            📷
+            <input type="file" accept="image/*" style="display:none;" onchange="handlePfpUpload(this)">
+        </label>
+    </div>
+    <div class="sidebar-info">
+        <div class="sidebar-name" id="sidebar-username">—</div>
+        <div id="sidebar-admin-badge" style="display:none;margin-bottom:10px;">
+            <span style="background:#f9a826;color:#fff;font-size:0.78rem;font-weight:700;padding:3px 12px;border-radius:99px;">🛡️ ADMIN</span>
+        </div>
+        <div class="sidebar-detail"><span class="sidebar-icon">✉️</span><span id="sidebar-email">—</span></div>
+        <div class="sidebar-detail"><span class="sidebar-icon">📞</span><span id="sidebar-phone">—</span></div>
+        <div class="sidebar-detail"><span class="sidebar-icon">👤</span><span id="sidebar-role-label">—</span></div>
+    </div>
+    <hr class="sidebar-divider">
+    <div class="sidebar-actions">
+        <a href="report.html" class="sidebar-link" id="sidebar-reports-link">🚨 Report Animal</a>
+        <a href="my-reports.html" class="sidebar-link" id="sidebar-my-reports-link">📋 My Reports</a>
+        <a href="my-adoptions.html" class="sidebar-link" id="sidebar-adoptions-link">🐾 My Adoptions</a>
+        <a href="admin.html" class="sidebar-link" id="sidebar-dashboard-link" style="display:none;">⚙️ Admin Dashboard</a>
+        <button class="sidebar-logout" onclick="logout()">🚪 Log Out</button>
+    </div>
+</div>
+ 
+<footer class="site-footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <h4>About Adopto</h4>
+                <p>Adopto is dedicated to connecting loving families with pets in need.</p>
+            </div>
+            <div class="col-md-3">
+                <h4>Contact Us</h4>
+                <p>Email: info@adopto.com<br>Phone: +1 (123) 456-7890<br>Hours: Mon-Fri, 9 AM - 5 PM</p>
+            </div>
+            <div class="col-md-3">
+                <h4>Our Location</h4>
+                <p>123 Pet Haven Lane<br>Suite 100<br>Animal City, AC 12345</p>
+            </div>
+            <div class="col-md-3">
+                <h4>Connect With Us</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="bi bi-facebook"></i> Facebook</a><br>
+                    <a href="#"><i class="bi bi-twitter"></i> Twitter</a><br>
+                    <a href="#"><i class="bi bi-instagram"></i> Instagram</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Adopto — All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </div>
+    </div>
+</footer>
+ 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+<script>
+function syncNavAvatar() {
+    const user = JSON.parse(localStorage.getItem('loggedInUser') || 'null');
+    const loginBtn   = document.querySelector('.btn-primary[data-bs-target="#login-modal"]');
+    const profileBtn = document.querySelector('.profile-btn');
+    const navImg     = document.getElementById('nav-pfp-img');
+    const navInit    = document.getElementById('nav-initials');
+ 
+    if (!user) {
+        if (loginBtn)   loginBtn.style.display   = '';
+        if (profileBtn) profileBtn.style.display  = 'none';
+        return;
+    }
+ 
+    if (loginBtn)   loginBtn.style.display   = 'none';
+    if (profileBtn) profileBtn.style.display  = 'flex';
+ 
+    const pfp = localStorage.getItem('adopto_pfp_' + user.username);
+    if (pfp && navImg) {
+        navImg.src = pfp;
+        navImg.style.display = 'block';
+        if (navInit) navInit.style.display = 'none';
+    } else if (navInit) {
+        navInit.textContent = (user.username || '?')[0].toUpperCase();
+        navInit.style.display = 'block';
+        if (navImg) navImg.style.display = 'none';
+    }
+}
+ 
+document.addEventListener('DOMContentLoaded', syncNavAvatar);
+document.addEventListener('authStateChanged', syncNavAvatar);
+</script>
+</body>
+</html>

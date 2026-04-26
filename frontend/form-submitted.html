@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Submitted - Adopto</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #fdf8f0; }
+
+    .success-wrap {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .success-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 50px 40px;
+      text-align: center;
+      max-width: 540px;
+      width: 100%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .success-icon {
+      font-size: 5rem;
+      margin-bottom: 16px;
+      display: block;
+      animation: pop 0.5s ease;
+    }
+
+    @keyframes pop {
+      0%   { transform: scale(0); opacity: 0; }
+      80%  { transform: scale(1.1); }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+
+    .success-card h2 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .success-card .subtitle {
+      color: #666;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .pet-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: #fdf8f0;
+      border: 2px solid #f9a826;
+      border-radius: 50px;
+      padding: 10px 20px 10px 10px;
+      margin-bottom: 24px;
+    }
+
+    .pet-chip img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #f9a826;
+    }
+
+    .pet-chip-info { text-align: left; }
+    .pet-chip-name { font-weight: 700; font-size: 1rem; color: #333; }
+    .pet-chip-meta { font-size: 0.82rem; color: #888; }
+
+    .status-note {
+      background: #fff3e6;
+      border-left: 4px solid #f9a826;
+      border-radius: 10px;
+      padding: 14px 18px;
+      text-align: left;
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .status-note strong { color: #333; }
+
+    .btn-primary-yellow {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #f9a826;
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      text-align: center;
+      margin-bottom: 12px;
+      transition: background 0.2s;
+    }
+
+    .btn-primary-yellow:hover { background: #e0930f; color: #fff; }
+
+    .btn-outline-yellow {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      color: #f9a826;
+      border: 2px solid #f9a826;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .btn-outline-yellow:hover {
+      background: #fdf8f0;
+      color: #f9a826;
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid">
+  <header>
+    <div class="logo">
+      <img src="images/logo.jpeg" alt="Adopto Logo" class="logo-img">
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="adoption.html">Adopt</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="auth-buttons">
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#login-modal">
+        Log In / Sign Up
+      </button>
+      <a href="#" class="profile-btn" onclick="openSidebar(); return false;" style="display:none;">Profile</a>
+    </div>
+  </header>
+
+  <div class="success-wrap">
+    <div class="success-card">
+      <span class="success-icon">🐾</span>
+      <h2>Application Submitted!</h2>
+      <p class="subtitle">
+        Thank you for choosing to adopt! Your application has been received
+        and is currently under review by our team.
+      </p>
+
+      <div class="pet-chip" id="petChip" style="display:none;">
+        <img id="chip-img" src="images/logo.jpeg" alt="Pet" onerror="this.src='images/logo.jpeg'">
+        <div class="pet-chip-info">
+          <div class="pet-chip-name" id="chip-name">—</div>
+          <div class="pet-chip-meta" id="chip-meta">—</div>
+        </div>
+      </div>
+
+      <div class="status-note">
+        ⏳ Your application is currently <strong>Pending Review</strong>.<br>
+        We will contact you soon with further updates.
+        You can check your application status anytime in <strong>My Adoptions</strong>.
+      </div>
+
+      <a href="my-adoptions.html" class="btn-primary-yellow">🐾 View My Adoptions</a>
+      <a href="index.html" class="btn-outline-yellow">🏠 Back to Home</a>
+    </div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+<div id="profile-sidebar">
+  <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+  <div class="sidebar-pfp-wrap">
+    <div class="sidebar-avatar">
+      <img id="sidebar-pfp" src="" alt="Profile" style="display:none;">
+      <span id="sidebar-initials"></span>
+    </div>
+    <label class="pfp-upload-btn" title="Change photo">
+      📷
+      <input type="file" accept="image/*" style="display:none;" onchange="handlePfpUpload(this)">
+    </label>
+  </div>
+  <div class="sidebar-info">
+    <div class="sidebar-name" id="sidebar-username">—</div>
+    <div id="sidebar-admin-badge" style="display:none; margin-bottom:10px;">
+      <span style="background:#f9a826;color:#fff;font-size:0.78rem;font-weight:700;padding:3px 12px;border-radius:99px;">🛡️ ADMIN</span>
+    </div>
+    <div class="sidebar-detail"><span class="sidebar-icon">✉️</span><span id="sidebar-email">—</span></div>
+    <div class="sidebar-detail"><span class="sidebar-icon">📞</span><span id="sidebar-phone">—</span></div>
+    <div class="sidebar-detail"><span class="sidebar-icon">👤</span><span id="sidebar-role-label">—</span></div>
+  </div>
+  <hr class="sidebar-divider">
+  <div class="sidebar-actions">
+    <a href="my-adoptions.html" class="sidebar-link" id="sidebar-adoptions-link">🐾 My Adoptions</a>
+    <a href="admin.html" class="sidebar-link" id="sidebar-dashboard-link" style="display:none;">⚙️ Admin Dashboard</a>
+    <button class="sidebar-logout" onclick="logout()">🚪 Log Out</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const username = localStorage.getItem('username');
+  const role     = localStorage.getItem('role');
+  if (username && role) showProfileState(username, role);
+
+  const p       = new URLSearchParams(window.location.search);
+  const petName = p.get('pet');
+  const petImg  = p.get('image');
+  const petMeta = p.get('meta');
+
+  if (petName) {
+    document.getElementById('petChip').style.display    = 'inline-flex';
+    document.getElementById('chip-name').textContent    = petName;
+    document.getElementById('chip-meta').textContent    = petMeta || '';
+    if (petImg) document.getElementById('chip-img').src = decodeURIComponent(petImg);
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Adopto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { display: flex; height: 100vh; background: #f5f5f5; font-family: system-ui, sans-serif; }
+
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(135deg, #f9a826, #ffb84d);
+            color: white;
+            padding: 30px 0;
+            min-height: 100vh;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            left: 0; top: 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-brand { padding: 0 20px; margin-bottom: 10px; }
+        .sidebar-brand h2 { font-size: 1.5rem; font-weight: 700; margin: 0; }
+
+        .sidebar-admin-info {
+            padding: 10px 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 10px;
+        }
+
+        .sidebar-admin-avatar {
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; margin-bottom: 8px;
+            border: 2px solid rgba(255,255,255,0.6);
+        }
+
+        .sidebar-admin-name { font-weight: 700; font-size: 0.95rem; }
+        .sidebar-admin-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.25);
+            font-size: 0.72rem; font-weight: 700;
+            padding: 2px 10px; border-radius: 99px;
+            letter-spacing: 0.06em; margin-top: 4px;
+        }
+
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav > li { margin: 0; }
+
+        .sidebar-nav > li > a {
+            display: block;
+            padding: 14px 25px;
+            color: white; text-decoration: none; cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sidebar-nav > li > a:hover,
+        .sidebar-nav > li > a.active {
+            background: rgba(0,0,0,0.15);
+            border-left-color: white;
+            padding-left: 35px;
+        }
+
+        /* Special case for Manage Pets which needs flex for chevron */
+        .sidebar-nav > li > a.has-chevron {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chevron { transition: transform 0.3s; font-style: normal; font-size: 0.8rem; }
+        .chevron.open { transform: rotate(90deg); }
+
+        .submenu { display: none; list-style: none; background: rgba(0,0,0,0.1); }
+        .submenu.open { display: block; }
+
+        .submenu li a {
+            display: block;
+            padding: 11px 25px 11px 45px;
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-size: 0.92rem; font-weight: 500;
+            cursor: pointer; transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .submenu li a:hover,
+        .submenu li a.active {
+            background: rgba(0,0,0,0.1);
+            border-left-color: white;
+            color: white; padding-left: 52px;
+        }
+
+        .sidebar-bottom-links { margin-top: 20px; }
+
+        .main-content { margin-left: 260px; flex: 1; overflow-y: auto; padding: 30px; }
+
+        .dashboard-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; background: white;
+            padding: 25px; border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .dashboard-header h1 { margin: 0; font-size: 2rem; color: #333; }
+
+        .logout-btn {
+            background: linear-gradient(90deg, #f9a826, #ffb84d);
+            color: white; border: none; padding: 12px 25px;
+            border-radius: 8px; cursor: pointer; font-weight: 700;
+            transition: transform 0.2s;
+        }
+        .logout-btn:hover { transform: translateY(-2px); }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px; margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white; padding: 25px; border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center; transition: transform 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card h3 { color: #f9a826; font-size: 2.5rem; margin: 0; font-weight: 700; }
+        .stat-card p { color: #666; margin: 10px 0 0; font-weight: 500; }
+
+        .filter-bar {
+            background: white; padding: 20px; border-radius: 12px;
+            margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .filter-bar label { font-weight: 600; margin-right: 10px; color: #333; }
+        .filter-bar select {
+            padding: 10px 15px; border: 1px solid #ddd;
+            border-radius: 8px; background: white; cursor: pointer;
+        }
+
+        .request-card {
+            background: white; border-left: 4px solid #f9a826;
+            border-radius: 12px; padding: 20px; margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+        }
+        .request-card.approved { border-left-color: #4caf50; }
+        .request-card.rejected { border-left-color: #f44336; }
+
+        .request-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
+        .request-info h4 { margin: 0; color: #333; font-weight: 600; }
+        .request-meta { color: #999; font-size: 0.9rem; margin-top: 5px; }
+
+        .status-badge { padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; }
+        .status-pending  { background: #fff3e6; color: #b55a02; }
+        .status-approved { background: #e8f9ee; color: #247a3e; }
+        .status-rejected { background: #ffe8e8; color: #c53f3f; }
+
+        .request-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px; margin: 15px 0;
+        }
+
+        .detail-item { padding: 12px; background: #f9f9f9; border-radius: 8px; }
+        .detail-item strong { color: #333; display: block; margin-bottom: 5px; }
+        .detail-item p { color: #666; font-size: 0.9rem; margin: 0; }
+
+        .note-textarea {
+            width: 100%; padding: 10px 14px;
+            border: 1px solid #ddd; border-radius: 8px;
+            font-family: inherit; font-size: 0.9rem;
+            resize: vertical; min-height: 70px;
+            margin-bottom: 10px;
+            transition: border-color 0.2s;
+        }
+        .note-textarea:focus { border-color: #f9a826; outline: none; }
+
+        .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .action-buttons button {
+            padding: 8px 16px; border: none; border-radius: 8px;
+            cursor: pointer; font-weight: 600; font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .btn-approve { background: #4caf50; color: white; }
+        .btn-approve:hover { background: #45a049; transform: translateY(-2px); }
+        .btn-reject  { background: #f44336; color: white; }
+        .btn-reject:hover  { background: #da190b; transform: translateY(-2px); }
+
+        .existing-note {
+            margin-top: 12px; padding: 10px 14px;
+            background: #fdf8f0; border-left: 3px solid #f9a826;
+            border-radius: 8px; font-size: 0.9rem; color: #555;
+        }
+        .existing-note.rejected { background: #fff5f5; border-left-color: #f44336; }
+        .existing-note strong { color: #333; }
+
+        .feedback-card {
+            background: white; border-left: 4px solid #2196F3;
+            border-radius: 12px; padding: 20px; margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+        }
+        .feedback-top { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .feedback-top h4 { margin: 0; color: #333; font-weight: 600; }
+        .feedback-date { color: #999; font-size: 0.9rem; }
+        .feedback-msg { color: #666; line-height: 1.6; margin: 8px 0; }
+        .feedback-rating { color: #f9a826; font-weight: 600; }
+
+        .pets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .admin-pet-card {
+            background: white; border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden; transition: transform 0.3s;
+        }
+        .admin-pet-card:hover { transform: translateY(-4px); }
+        .admin-pet-card img { width: 100%; height: 200px; object-fit: cover; }
+        .admin-pet-body { padding: 16px; }
+        .admin-pet-name { font-size: 1.2rem; font-weight: 700; color: #333; margin-bottom: 4px; }
+        .admin-pet-meta { font-size: 0.9rem; color: #888; margin-bottom: 10px; }
+        .vacc-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+        .vacc-pill { font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 99px; }
+        .vacc-yes { background: #e8f9ee; color: #247a3e; }
+        .vacc-no  { background: #ffe8e8; color: #c53f3f; }
+        .admin-pet-desc {
+            font-size: 0.88rem; color: #666;
+            line-height: 1.5; margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .status-tag { display: inline-block; font-size: 0.78rem; font-weight: 700; padding: 3px 12px; border-radius: 99px; margin-bottom: 12px; }
+        .status-available { background: #e8f9ee; color: #247a3e; }
+        .status-adopted   { background: #e8eeff; color: #1a3eb5; }
+        .status-pending   { background: #fff3e6; color: #b55a02; }
+
+        .add-pet-form {
+            background: white; padding: 35px; border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08); max-width: 650px;
+        }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 7px; font-weight: 600; color: #333; }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%; padding: 11px 13px;
+            border: 1px solid #ddd; border-radius: 8px;
+            font-size: 0.95rem; font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus { border-color: #f9a826; outline: none; }
+        .form-group textarea { resize: vertical; min-height: 90px; }
+
+        .vacc-group { display: flex; flex-direction: column; gap: 10px; }
+        .vacc-check {
+            display: flex; align-items: center; gap: 10px;
+            background: #fdf8f0; padding: 10px 14px;
+            border-radius: 8px; cursor: pointer;
+        }
+        .vacc-check input { width: auto; margin: 0; cursor: pointer; }
+        .vacc-check label { margin: 0; cursor: pointer; font-size: 0.95rem; }
+        .vacc-check .vacc-info { font-size: 0.8rem; color: #999; margin-top: 2px; }
+
+        .image-preview-wrap { margin-top: 10px; }
+        .image-preview-wrap img {
+            width: 120px; height: 100px; object-fit: cover;
+            border-radius: 8px; border: 2px solid #f9a826; display: none;
+        }
+
+        .btn-primary-action {
+            background: linear-gradient(90deg, #f9a826, #ffb84d);
+            color: white; padding: 12px 28px;
+            border: none; border-radius: 8px;
+            cursor: pointer; font-weight: 700; font-size: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary-action:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(249,168,38,0.3); }
+
+        .delete-pet-card {
+            background: white; border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden; transition: transform 0.3s;
+        }
+        .delete-pet-card:hover { transform: translateY(-4px); }
+        .delete-pet-card img { width: 100%; height: 180px; object-fit: cover; }
+        .delete-pet-body { padding: 14px; }
+        .btn-delete-pet {
+            width: 100%; padding: 10px;
+            background: #fff0f0; color: #c62828;
+            border: none; border-radius: 8px;
+            font-weight: 700; cursor: pointer;
+            transition: background 0.2s; margin-top: 10px;
+        }
+        .btn-delete-pet:hover { background: #c62828; color: white; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: #999; }
+        .empty-state h3 { color: #666; margin-bottom: 10px; }
+        .section-title { font-size: 1.6rem; font-weight: 700; color: #333; margin-bottom: 24px; }
+
+        .toast-msg {
+            position: fixed; bottom: 30px; right: 30px;
+            background: #333; color: white;
+            padding: 14px 24px; border-radius: 10px;
+            font-weight: 500; z-index: 9999;
+            opacity: 0; transform: translateY(20px);
+            transition: all 0.3s; pointer-events: none;
+        }
+        .toast-msg.show { opacity: 1; transform: translateY(0); }
+        .toast-msg.success { background: #2e7d32; }
+        .toast-msg.error   { background: #c62828; }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { margin-left: 0; }
+            body { flex-direction: column; height: auto; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-brand"><h2>🐾 Adopto</h2></div>
+    <div class="sidebar-admin-info">
+        <div class="sidebar-admin-avatar">🛡️</div>
+        <div class="sidebar-admin-name" id="sidebar-admin-name">admin@1</div>
+        <span class="sidebar-admin-badge">ADMINISTRATOR</span>
+    </div>
+    <ul class="sidebar-nav">
+        <li><a onclick="switchSection('dashboard', this)">📊 Dashboard</a></li>
+        <li><a onclick="switchSection('requests', this)">📋 Requests</a></li>
+        <li><a onclick="switchSection('feedback', this)">💬 Feedback</a></li>
+        <li>
+            <a class="has-chevron" onclick="toggleSubmenu(this)" id="manage-pets-toggle">
+                🐕 Manage Pets <i class="chevron" id="pets-chevron">›</i>
+            </a>
+            <ul class="submenu" id="pets-submenu">
+                <li><a onclick="switchSection('view-pets', this)">👁️ View Pets</a></li>
+                <li><a onclick="switchSection('add-pet', this)">➕ Add Pet</a></li>
+                <li><a onclick="switchSection('delete-pet', this)">🗑️ Delete Pet</a></li>
+            </ul>
+        </li>
+        <li><a onclick="switchSection('ngo-management', this)">🌿 NGOs</a></li>
+        <li><a onclick="switchSection('pending-pets', this)">🐾 Pet Submissions</a></li>
+
+        <div class="sidebar-bottom-links">
+            <li><a onclick="window.location.href='index.html'">🏠 Back to Site</a></li>
+            <li><a onclick="logoutAdmin()">🚪 Logout</a></li>
+        </div>
+    </ul>
+</div>
+
+<div class="main-content">
+    <div class="dashboard-header">
+        <h1 id="section-heading">✨ Dashboard</h1>
+        <button class="logout-btn" onclick="logoutAdmin()">Logout</button>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="section active">
+        <div class="stats-container">
+            <div class="stat-card"><h3 id="total-requests">0</h3><p>Total Requests</p></div>
+            <div class="stat-card"><h3 id="pending-requests">0</h3><p>Pending</p></div>
+            <div class="stat-card"><h3 id="approved-requests">0</h3><p>Approved</p></div>
+            <div class="stat-card"><h3 id="total-pets">0</h3><p>Total Pets</p></div>
+        </div>
+    </div>
+
+    <!-- Adoption Requests -->
+    <div id="requests" class="section">
+        <p class="section-title">Adoption Requests</p>
+        <div class="filter-bar">
+            <label>Filter by Status:</label>
+            <select id="status-filter" onchange="loadRequests()">
+                <option value="">All Requests</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+        <div id="requests-container"></div>
+    </div>
+
+    <!-- Feedback -->
+    <div id="feedback" class="section">
+        <p class="section-title">User Feedback</p>
+        <div id="feedback-container"></div>
+    </div>
+
+    <!-- View Pets -->
+    <div id="view-pets" class="section">
+        <p class="section-title">All Pets</p>
+        <div class="pets-grid" id="view-pets-grid"></div>
+    </div>
+
+    <!-- Add Pet -->
+    <div id="add-pet" class="section">
+        <p class="section-title">Add New Pet</p>
+        <div class="add-pet-form">
+            <form id="add-pet-form" onsubmit="submitAddPet(event)">
+                <div class="form-group"><label>Pet Name *</label><input type="text" id="pet-name" required></div>
+                <div class="form-group"><label>Type (Dog / Cat / Bird / Rabbit...)</label><input type="text" id="pet-type"></div>
+                <div class="form-group"><label>Breed</label><input type="text" id="pet-breed"></div>
+                <div class="form-group"><label>Age (years)</label><input type="number" id="pet-age" min="0"></div>
+                <div class="form-group"><label>Temperament (e.g. Friendly, Playful)</label><input type="text" id="pet-temperament"></div>
+                <div class="form-group"><label>Description / Backstory *</label><textarea id="pet-desc" required></textarea></div>
+                <div class="form-group">
+                    <label>Vaccinations Given</label>
+                    <div class="vacc-group">
+                        <label class="vacc-check">
+                            <input type="checkbox" id="vacc-rabies">
+                            <div><div>Rabies</div><div class="vacc-info">Prevents fatal rabies virus — essential for all strays</div></div>
+                        </label>
+                        <label class="vacc-check">
+                            <input type="checkbox" id="vacc-distemper">
+                            <div><div>Distemper (DHPPi)</div><div class="vacc-info">Covers Distemper, Hepatitis, Parainfluenza & Parvovirus</div></div>
+                        </label>
+                        <label class="vacc-check">
+                            <input type="checkbox" id="vacc-parvovirus">
+                            <div><div>Parvovirus</div><div class="vacc-info">Highly contagious — critical for puppies & strays</div></div>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Pet Photo *</label>
+                    <input type="file" id="pet-image" accept="image/*" required onchange="previewImage(this)">
+                    <div class="image-preview-wrap"><img id="pet-image-preview" src="" alt="Preview"></div>
+                </div>
+                <div id="add-pet-msg" style="font-size:0.9rem; margin-bottom:12px;"></div>
+                <button type="submit" class="btn-primary-action">✅ Add Pet</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Pet -->
+    <div id="delete-pet" class="section">
+        <p class="section-title">Delete a Pet</p>
+        <div class="pets-grid" id="delete-pets-grid"></div>
+    </div>
+
+    <!-- ✅ NGO Management — NOW INSIDE main-content -->
+    <div id="ngo-management" class="section">
+        <p class="section-title">🌿 NGO Management</p>
+        <div style="background:white;padding:30px;border-radius:15px;box-shadow:0 5px 20px rgba(0,0,0,0.08);max-width:500px;margin-bottom:30px;">
+            <h4 style="margin-bottom:20px;color:#333;">Create NGO Account</h4>
+            <div class="form-group"><label>NGO Name *</label><input type="text" id="ngo-name"></div>
+            <div class="form-group"><label>Email *</label><input type="email" id="ngo-email"></div>
+            <div class="form-group"><label>Password *</label><input type="password" id="ngo-password"></div>
+            <div class="form-group"><label>Phone</label><input type="tel" id="ngo-phone"></div>
+            <div class="form-group"><label>Address</label><textarea id="ngo-address" style="min-height:60px;"></textarea></div>
+            <div id="ngo-create-msg" style="font-size:0.9rem;margin-bottom:10px;"></div>
+            <button class="btn-primary-action" onclick="createNGO()">➕ Create NGO Account</button>
+        </div>
+        <h4 style="margin-bottom:16px;color:#333;">Existing NGO Partners</h4>
+        <div id="ngo-list"></div>
+    </div>
+
+    <!-- ✅ Pending Pet Submissions — NOW INSIDE main-content -->
+    <div id="pending-pets" class="section">
+        <p class="section-title">🐾 Pending Pet Submissions</p>
+        <div id="pending-pets-container"></div>
+    </div>
+
+</div><!-- end main-content -->
+
+<div class="toast-msg" id="toast"></div>
+
+<script>
+const API = 'http://localhost:5000';
+
+const role     = localStorage.getItem('role');
+const username = localStorage.getItem('username');
+if (role !== 'admin' || username !== 'admin@1') {
+    window.location.href = 'index.html';
+}
+document.getElementById('sidebar-admin-name').textContent = username;
+
+function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast-msg ${type} show`;
+    setTimeout(() => t.className = 'toast-msg', 3000);
+}
+
+function toggleSubmenu(el) {
+    const submenu = document.getElementById('pets-submenu');
+    const chevron = document.getElementById('pets-chevron');
+    const isOpen  = submenu.classList.contains('open');
+    submenu.classList.toggle('open', !isOpen);
+    chevron.classList.toggle('open', !isOpen);
+}
+
+const headings = {
+    'dashboard'      : '✨ Dashboard',
+    'requests'       : '📋 Adoption Requests',
+    'feedback'       : '💬 User Feedback',
+    'view-pets'      : '👁️ View Pets',
+    'add-pet'        : '➕ Add New Pet',
+    'delete-pet'     : '🗑️ Delete a Pet',
+    'ngo-management' : '🌿 NGO Management',
+    'pending-pets'   : '🐾 Pending Pet Submissions',
+};
+
+function switchSection(sectionId, navEl) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.sidebar-nav > li > a, .submenu li a').forEach(a => a.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+    if (navEl) navEl.classList.add('active');
+    document.getElementById('section-heading').textContent = headings[sectionId] || '';
+
+    if (['view-pets','add-pet','delete-pet'].includes(sectionId)) {
+        document.getElementById('pets-submenu').classList.add('open');
+        document.getElementById('pets-chevron').classList.add('open');
+    }
+
+    if (sectionId === 'dashboard')       loadDashboardStats();
+    if (sectionId === 'requests')        loadRequests();
+    if (sectionId === 'feedback')        loadFeedback();
+    if (sectionId === 'view-pets')       loadViewPets();
+    if (sectionId === 'delete-pet')      loadDeletePets();
+    if (sectionId === 'ngo-management')  loadNGOs();
+    if (sectionId === 'pending-pets')    loadPendingPets();
+}
+
+async function loadDashboardStats() {
+    try {
+        const [adoptions, pets] = await Promise.all([
+            fetch(`${API}/api/adoptions`).then(r => r.json()),
+            fetch(`${API}/api/pets`).then(r => r.json())
+        ]);
+        document.getElementById('total-requests').textContent   = adoptions.length;
+        document.getElementById('pending-requests').textContent  = adoptions.filter(a => a.status === 'pending').length;
+        document.getElementById('approved-requests').textContent = adoptions.filter(a => a.status === 'approved').length;
+        document.getElementById('total-pets').textContent        = pets.length;
+    } catch (err) { console.error(err); }
+}
+
+async function loadRequests() {
+    const container = document.getElementById('requests-container');
+    const filter    = document.getElementById('status-filter').value;
+    try {
+        let adoptions = await fetch(`${API}/api/adoptions`).then(r => r.json());
+        if (filter) adoptions = adoptions.filter(a => a.status === filter);
+
+        if (adoptions.length === 0) {
+            container.innerHTML = `<div class="empty-state"><h3>No requests found</h3></div>`;
+            return;
+        }
+
+        container.innerHTML = adoptions.map((req, i) => `
+            <div class="request-card ${req.status || 'pending'}">
+                <div class="request-header">
+                    <div class="request-info">
+                        <h4>${req.name || 'N/A'}</h4>
+                        <p class="request-meta">
+                            Pet: <strong>${req.pet_name || 'N/A'}</strong> ·
+                            Applied: ${new Date(req.application_date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}
+                        </p>
+                    </div>
+                    <span class="status-badge status-${req.status || 'pending'}">${(req.status || 'pending').toUpperCase()}</span>
+                </div>
+                <div class="request-details">
+                    <div class="detail-item"><strong>Email</strong><p>${req.email || 'N/A'}</p></div>
+                    <div class="detail-item"><strong>Phone</strong><p>${req.phone || 'N/A'}</p></div>
+                    <div class="detail-item"><strong>Address</strong><p>${req.address || 'N/A'}</p></div>
+                    <div class="detail-item"><strong>Home Condition</strong><p>${req.home_condition || 'N/A'}</p></div>
+                    <div class="detail-item"><strong>Pet Stay</strong><p>${req.pet_stay || 'N/A'}</p></div>
+                    <div class="detail-item"><strong>Caretaker</strong><p>${req.caretaker_name || 'N/A'} · ${req.caretaker_contact || ''}</p></div>
+                    <div class="detail-item"><strong>People at home</strong><p>${req.people_count || 'N/A'}</p></div>
+                    <div class="detail-item"><strong>Interview</strong><p>${req.interview_method || 'N/A'} · ${req.interview_contact || ''}</p></div>
+                </div>
+                <div class="detail-item" style="margin-top:10px;">
+                    <strong>Reason for Adoption</strong>
+                    <p>${req.reason || 'N/A'}</p>
+                </div>
+                ${req.status === 'pending' ? `
+                <div style="margin-top:15px;">
+                    <textarea class="note-textarea" id="note-${i}"
+                        placeholder="Optional: write a note for the applicant..."></textarea>
+                    <div class="action-buttons">
+                        <button class="btn-approve" onclick="updateRequest(${i}, 'approved', ${req.id})">✓ Approve</button>
+                        <button class="btn-reject"  onclick="updateRequest(${i}, 'rejected', ${req.id})">✗ Reject</button>
+                    </div>
+                </div>` : `
+                ${req.admin_note ? `
+                <div class="existing-note ${req.status === 'rejected' ? 'rejected' : ''}">
+                    <strong>Note sent to applicant:</strong> ${req.admin_note}
+                </div>` : ''}`}
+            </div>
+        `).join('');
+    } catch (err) {
+        container.innerHTML = `<div class="empty-state"><h3>Error loading requests</h3></div>`;
+    }
+}
+
+async function updateRequest(index, status, adoptionId) {
+    const noteEl = document.getElementById(`note-${index}`);
+    const note   = noteEl ? noteEl.value.trim() : '';
+    try {
+        const res = await fetch(`${API}/api/adoptions/${adoptionId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status, admin_note: note })
+        });
+        if (res.ok) {
+            showToast(`Request ${status}! 🐾`);
+            loadRequests();
+            loadDashboardStats();
+        } else {
+            showToast('Failed to update', 'error');
+        }
+    } catch (err) { showToast('Cannot reach server', 'error'); }
+}
+
+async function loadFeedback() {
+    const container = document.getElementById('feedback-container');
+    try {
+        const feedback = await fetch(`${API}/api/feedback`).then(r => r.json());
+        if (feedback.length === 0) {
+            container.innerHTML = `<div class="empty-state"><h3>No feedback yet</h3></div>`;
+            return;
+        }
+        container.innerHTML = feedback.map(fb => `
+            <div class="feedback-card">
+                <div class="feedback-top">
+                    <h4>${fb.name || 'Anonymous'}</h4>
+                    <span class="feedback-date">${new Date(fb.createdAt).toLocaleDateString()}</span>
+                </div>
+                <div class="feedback-rating">${'★'.repeat(fb.rating || 0)}${'☆'.repeat(5-(fb.rating||0))}</div>
+                <p class="feedback-msg">${fb.message || 'N/A'}</p>
+            </div>
+        `).join('');
+    } catch (err) {
+        container.innerHTML = `<div class="empty-state"><h3>Error loading feedback</h3></div>`;
+    }
+}
+
+async function loadViewPets() {
+    const grid = document.getElementById('view-pets-grid');
+    try {
+        const pets = await fetch(`${API}/api/pets`).then(r => r.json());
+        if (pets.length === 0) {
+            grid.innerHTML = `<div class="empty-state"><h3>No pets yet</h3></div>`;
+            return;
+        }
+        grid.innerHTML = pets.map(pet => `
+            <div class="admin-pet-card">
+                <img src="${pet.image_url || 'images/logo.jpeg'}" alt="${pet.name}" onerror="this.src='images/logo.jpeg'">
+                <div class="admin-pet-body">
+                    <div class="admin-pet-name">${pet.name}</div>
+                    <div class="admin-pet-meta">
+                        ${pet.type || ''}${pet.type && pet.breed ? ' · ':'' }${pet.breed || ''}${pet.age ? ' · '+pet.age+' yr':''}
+                    </div>
+                    <span class="status-tag status-${pet.status || 'available'}">${pet.status || 'available'}</span>
+                    <div class="vacc-row">
+                        <span class="vacc-pill ${pet.vaccinated_rabies    ? 'vacc-yes':'vacc-no'}">Rabies ${pet.vaccinated_rabies    ? '✓':'✗'}</span>
+                        <span class="vacc-pill ${pet.vaccinated_distemper  ? 'vacc-yes':'vacc-no'}">Distemper ${pet.vaccinated_distemper  ? '✓':'✗'}</span>
+                        <span class="vacc-pill ${pet.vaccinated_parvovirus ? 'vacc-yes':'vacc-no'}">Parvovirus ${pet.vaccinated_parvovirus ? '✓':'✗'}</span>
+                    </div>
+                    <p class="admin-pet-desc">${pet.description || '—'}</p>
+                </div>
+            </div>
+        `).join('');
+    } catch (err) {
+        grid.innerHTML = `<div class="empty-state"><h3>Error loading pets</h3></div>`;
+    }
+}
+
+function previewImage(input) {
+    const preview = document.getElementById('pet-image-preview');
+    if (input.files && input.files[0]) {
+        preview.src = URL.createObjectURL(input.files[0]);
+        preview.style.display = 'block';
+    }
+}
+
+async function submitAddPet(e) {
+    e.preventDefault();
+    const msgEl = document.getElementById('add-pet-msg');
+    msgEl.textContent = '';
+    const formData = new FormData();
+    formData.append('name',                  document.getElementById('pet-name').value.trim());
+    formData.append('type',                  document.getElementById('pet-type').value.trim());
+    formData.append('breed',                 document.getElementById('pet-breed').value.trim());
+    formData.append('age',                   document.getElementById('pet-age').value);
+    formData.append('temperament',           document.getElementById('pet-temperament').value.trim());
+    formData.append('description',           document.getElementById('pet-desc').value.trim());
+    formData.append('vaccinated_rabies',     document.getElementById('vacc-rabies').checked);
+    formData.append('vaccinated_distemper',  document.getElementById('vacc-distemper').checked);
+    formData.append('vaccinated_parvovirus', document.getElementById('vacc-parvovirus').checked);
+    formData.append('image',                 document.getElementById('pet-image').files[0]);
+    try {
+        const res  = await fetch(`${API}/api/pets`, { method: 'POST', body: formData });
+        const data = await res.json();
+        if (res.ok) {
+            showToast('🐾 Pet added successfully!');
+            document.getElementById('add-pet-form').reset();
+            document.getElementById('pet-image-preview').style.display = 'none';
+            msgEl.style.color = '#2e7d32';
+            msgEl.textContent = '✅ Pet added! It is now live on the adoption page.';
+            loadDashboardStats();
+        } else {
+            msgEl.style.color = '#c62828';
+            msgEl.textContent = '❌ ' + (data.error || 'Failed to add pet');
+        }
+    } catch (err) {
+        msgEl.style.color = '#c62828';
+        msgEl.textContent = '❌ Cannot reach server.';
+    }
+}
+
+async function loadDeletePets() {
+    const grid = document.getElementById('delete-pets-grid');
+    try {
+        const pets = await fetch(`${API}/api/pets`).then(r => r.json());
+        if (pets.length === 0) {
+            grid.innerHTML = `<div class="empty-state"><h3>No pets to delete</h3></div>`;
+            return;
+        }
+        grid.innerHTML = pets.map(pet => `
+            <div class="delete-pet-card" id="del-card-${pet.id}">
+                <img src="${pet.image_url || 'images/logo.jpeg'}" alt="${pet.name}" onerror="this.src='images/logo.jpeg'">
+                <div class="delete-pet-body">
+                    <div class="admin-pet-name">${pet.name}</div>
+                    <div class="admin-pet-meta">${pet.breed || ''} ${pet.age ? '· '+pet.age+' yr':''}</div>
+                    <button class="btn-delete-pet" onclick="deletePet(${pet.id})">🗑️ Delete</button>
+                </div>
+            </div>
+        `).join('');
+    } catch (err) {
+        grid.innerHTML = `<div class="empty-state"><h3>Error loading pets</h3></div>`;
+    }
+}
+
+async function deletePet(id) {
+    if (!confirm('Are you sure you want to delete this pet? This cannot be undone.')) return;
+    try {
+        const res = await fetch(`${API}/api/pets/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            const card = document.getElementById(`del-card-${id}`);
+            if (card) card.remove();
+            showToast('Pet deleted successfully');
+            loadDashboardStats();
+        } else {
+            showToast('Failed to delete pet', 'error');
+        }
+    } catch (err) { showToast('Cannot reach server', 'error'); }
+}
+
+function logoutAdmin() {
+    localStorage.clear();
+    window.location.href = 'index.html';
+}
+
+// ── NGO Management ──
+async function loadNGOs() {
+    const list = document.getElementById('ngo-list');
+    try {
+        const res  = await fetch(`${API}/api/ngo/list`);
+        const ngos = await res.json();
+        if (ngos.length === 0) {
+            list.innerHTML = `<div class="empty-state"><h3>No NGOs yet</h3></div>`;
+            return;
+        }
+        list.innerHTML = ngos.map(n => `
+            <div style="background:white;border-radius:12px;padding:18px;margin-bottom:12px;box-shadow:0 3px 10px rgba(0,0,0,0.06);display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <div style="font-weight:700;color:#333;">${n.name}</div>
+                    <div style="font-size:0.88rem;color:#888;">${n.email} · ${n.phone || 'No phone'}</div>
+                </div>
+                <span style="background:#e8f9ee;color:#247a3e;padding:4px 12px;border-radius:99px;font-size:0.8rem;font-weight:700;">ACTIVE</span>
+            </div>
+        `).join('');
+    } catch (err) {
+        list.innerHTML = `<div class="empty-state"><h3>Error loading NGOs</h3></div>`;
+    }
+}
+
+async function createNGO() {
+    const name     = document.getElementById('ngo-name').value.trim();
+    const email    = document.getElementById('ngo-email').value.trim();
+    const password = document.getElementById('ngo-password').value;
+    const phone    = document.getElementById('ngo-phone').value.trim();
+    const address  = document.getElementById('ngo-address').value.trim();
+    const msgEl    = document.getElementById('ngo-create-msg');
+
+    if (!name || !email || !password) {
+        msgEl.style.color = '#c62828';
+        msgEl.textContent = '❌ Name, email and password are required.';
+        return;
+    }
+
+    try {
+        const res  = await fetch(`${API}/api/ngo/create`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password, phone, address })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            msgEl.style.color = '#2e7d32';
+            msgEl.textContent = '✅ NGO account created successfully!';
+            document.getElementById('ngo-name').value     = '';
+            document.getElementById('ngo-email').value    = '';
+            document.getElementById('ngo-password').value = '';
+            document.getElementById('ngo-phone').value    = '';
+            document.getElementById('ngo-address').value  = '';
+            loadNGOs();
+            showToast('NGO account created! 🌿');
+        } else {
+            msgEl.style.color = '#c62828';
+            msgEl.textContent = '❌ ' + (data.error || 'Failed to create NGO');
+        }
+    } catch (err) {
+        msgEl.style.color = '#c62828';
+        msgEl.textContent = '❌ Cannot reach server.';
+    }
+}
+
+// ── Pending Pet Submissions ──
+async function loadPendingPets() {
+    const container = document.getElementById('pending-pets-container');
+    try {
+        const pets = await fetch(`${API}/api/ngo/pets`).then(r => r.json());
+
+        if (pets.length === 0) {
+            container.innerHTML = `<div class="empty-state"><h3>No submissions yet</h3></div>`;
+            return;
+        }
+
+        container.innerHTML = pets.map(p => `
+            <div class="request-card ${p.status}" id="ngo-pet-card-${p.id}">
+                <div class="request-header">
+                    <div class="request-info">
+                        <h4>${p.name}</h4>
+                        <p class="request-meta">
+                            By: <strong>${p.ngo_name || 'NGO'}</strong> ·
+                            ${new Date(p.submitted_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}
+                        </p>
+                    </div>
+                    <span class="status-badge status-${p.status}">${p.status.toUpperCase()}</span>
+                </div>
+                <div class="request-details">
+                    <div class="detail-item"><strong>Type</strong><p>${p.type || 'N/A'}</p></div>
+                    <div class="detail-item"><strong>Breed</strong><p>${p.breed || 'N/A'}</p></div>
+                    <div class="detail-item"><strong>Age</strong><p>${p.age ? p.age+' yr' : 'N/A'}</p></div>
+                    <div class="detail-item"><strong>Temperament</strong><p>${p.temperament || 'N/A'}</p></div>
+                </div>
+                <div class="detail-item" style="margin:10px 0;">
+                    <strong>Description</strong>
+                    <p>${p.description || 'N/A'}</p>
+                </div>
+                ${p.image_url ? `
+                <img src="${p.image_url}" alt="${p.name}"
+                    style="width:120px;height:100px;object-fit:cover;border-radius:10px;border:2px solid #f9a826;margin-bottom:12px;"
+                    onerror="this.style.display='none'">` : ''}
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+                    <span class="vacc-pill ${p.vaccinated_rabies    ? 'vacc-yes':'vacc-no'}">Rabies ${p.vaccinated_rabies    ?'✓':'✗'}</span>
+                    <span class="vacc-pill ${p.vaccinated_distemper  ? 'vacc-yes':'vacc-no'}">Distemper ${p.vaccinated_distemper  ?'✓':'✗'}</span>
+                    <span class="vacc-pill ${p.vaccinated_parvovirus ? 'vacc-yes':'vacc-no'}">Parvovirus ${p.vaccinated_parvovirus ?'✓':'✗'}</span>
+                </div>
+                ${p.status === 'pending' ? `
+                <div style="margin-top:12px;">
+                    <textarea class="note-textarea" id="ngo-pet-note-${p.id}"
+                        placeholder="Optional note to NGO..."></textarea>
+                    <div class="action-buttons">
+                        <button class="btn-approve" onclick="approveNgoPet(${p.id})">✓ Approve & Add to Site</button>
+                        <button class="btn-reject"  onclick="rejectNgoPet(${p.id})">✗ Reject</button>
+                    </div>
+                </div>` : `
+                ${p.admin_note ? `
+                <div class="existing-note ${p.status === 'rejected' ? 'rejected':''}">
+                    <strong>Your note:</strong> ${p.admin_note}
+                </div>` : ''}`}
+            </div>
+        `).join('');
+    } catch (err) {
+        container.innerHTML = `<div class="empty-state"><h3>Error loading submissions</h3></div>`;
+    }
+}
+
+async function approveNgoPet(id) {
+    const note = document.getElementById(`ngo-pet-note-${id}`)?.value?.trim() || '';
+    try {
+        const res = await fetch(`${API}/api/ngo/pets/${id}/approve`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ admin_note: note })
+        });
+        if (res.ok) {
+            showToast('🐾 Pet approved and added to adoption page!');
+            loadPendingPets();
+            loadDashboardStats();
+        } else { showToast('Failed to approve', 'error'); }
+    } catch (err) { showToast('Cannot reach server', 'error'); }
+}
+
+async function rejectNgoPet(id) {
+    const note = document.getElementById(`ngo-pet-note-${id}`)?.value?.trim() || '';
+    try {
+        const res = await fetch(`${API}/api/ngo/pets/${id}/reject`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ admin_note: note })
+        });
+        if (res.ok) {
+            showToast('Submission rejected');
+            loadPendingPets();
+        } else { showToast('Failed to reject', 'error'); }
+    } catch (err) { showToast('Cannot reach server', 'error'); }
+}
+
+loadDashboardStats();
+</script>
+</body>
+</html>
