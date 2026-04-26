@@ -5,15 +5,6 @@ node_modules/
 .env
 
 backend/uploads/
-
-# Uploaded files
-frontend/images/*.jpeg
-frontend/images/*.jpg
-frontend/images/*.png
-frontend/images/*.avif
-frontend/images/*.webp
-!frontend/images/logo.jpeg
-!frontend/images/qr-code.png
 frontend/uploads/
 
 # Logs
