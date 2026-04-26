@@ -4,6 +4,8 @@ node_modules/
 # Environment variables — NEVER commit this
 .env
 
+backend/uploads/
+
 # Uploaded files
 frontend/images/*.jpeg
 frontend/images/*.jpg
