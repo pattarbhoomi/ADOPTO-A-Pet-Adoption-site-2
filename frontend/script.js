@@ -1,6 +1,6 @@
-const API          = 'http://localhost:5000';
-const API_FEEDBACK = 'http://localhost:5000/api/feedback';
-const OTP_API      = 'http://localhost:5000/api/otp';
+const API          = 'https://adopto-a-pet-adoption-site-2.onrender.com';
+const API_FEEDBACK = 'https://adopto-a-pet-adoption-site-2.onrender.com/api/feedback';
+const OTP_API      = 'https://adopto-a-pet-adoption-site-2.onrender.com/api/otp';
 
 const ADMIN_USERNAME = 'admin@1';
 const ADMIN_PASSWORD = 'adopto_adm';
@@ -545,7 +545,7 @@ async function toggleLike(feedbackId, btn) {
   const newCount     = alreadyLiked ? Math.max(0, currentCount - 1) : currentCount + 1;
 
   try {
-    await fetch(`http://localhost:5000/api/feedback/${feedbackId}/${endpoint}`, { method: 'PUT' });
+    await fetch(`https://adopto-a-pet-adoption-site-2.onrender.com/api/feedback/${feedbackId}/${endpoint}`, { method: 'PUT' });
 
     btn.dataset.count = newCount;
 

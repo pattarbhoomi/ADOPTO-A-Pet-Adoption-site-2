@@ -272,7 +272,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   // Prefill pet details from API
   if (petId) {
     try {
-      const res  = await fetch('http://localhost:5000/api/pets');
+      const res  = await fetch('https://adopto-a-pet-adoption-site-2.onrender.com/api/pets');
       const pets = await res.json();
       const pet  = pets.find(p => p.id == petId);
 
@@ -356,7 +356,7 @@ document.getElementById('adoptionForm').addEventListener('submit', async (e) => 
     msgEl.textContent = '⏳ Submitting application...';
     submitBtn.disabled = true;
 
-    const res  = await fetch('http://localhost:5000/api/adoptions', {
+    const res  = await fetch('https://adopto-a-pet-adoption-site-2.onrender.com/api/adoptions', {
       method: 'POST',
       body: formData
     });

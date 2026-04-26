@@ -229,7 +229,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (!userId) { list.innerHTML = emptyState(); return; }
 
   try {
-    const res  = await fetch(`http://localhost:5000/api/reports/user/${userId}`);
+    const res  = await fetch(`https://adopto-a-pet-adoption-site-2.onrender.com/api/reports/user/${userId}`);
     const data = await res.json();
 
     if (!data || data.length === 0) { list.innerHTML = emptyState(); return; }

@@ -157,7 +157,7 @@
 async function loadAdoptionPets() {
   const grid = document.getElementById('petGrid');
   try {
-    const res  = await fetch('http://localhost:5000/api/pets');
+    const res  = await fetch('https://adopto-a-pet-adoption-site-2.onrender.com/api/pets');
     const pets = await res.json();
 
     if (!pets || pets.length === 0) {

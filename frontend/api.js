@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = 'http://localhost:5000/api/auth'; // backend routes
+const API_BASE_URL = 'https://adopto-a-pet-adoption-site-2.onrender.com/api/auth'; // backend routes
 
 // Log API calls for debugging
 function logError(endpoint, error) {
