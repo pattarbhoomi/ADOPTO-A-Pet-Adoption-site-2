@@ -87,38 +87,43 @@
     </div>
 </div>
 
-<!-- Sidebar Overlay -->
-<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+ <!-- Sidebar Overlay -->
+  <div id="sidebar-overlay" onclick="closeSidebar()"></div>
 
-<!-- Profile Sidebar -->
-<div id="profile-sidebar">
+  <!-- Profile Sidebar -->
+  <div id="profile-sidebar">
     <button class="sidebar-close" onclick="closeSidebar()">✕</button>
     <div class="sidebar-pfp-wrap">
-        <div class="sidebar-avatar">
-            <img id="sidebar-pfp" src="" alt="Profile" style="display:none;">
-            <span id="sidebar-initials"></span>
-        </div>
-        <label class="pfp-upload-btn" title="Change photo">
-            📷
-            <input type="file" accept="image/*" style="display:none;" onchange="handlePfpUpload(this)">
-        </label>
+      <div class="sidebar-avatar">
+        <img id="sidebar-pfp" src="" alt="Profile" style="display:none;">
+        <span id="sidebar-initials"></span>
+      </div>
+      <label class="pfp-upload-btn" title="Change photo">
+        📷
+        <input type="file" accept="image/*" style="display:none;" onchange="handlePfpUpload(this)">
+      </label>
     </div>
     <div class="sidebar-info">
-        <div class="sidebar-name" id="sidebar-username">—</div>
-        <div id="sidebar-admin-badge" style="display:none; margin-bottom:10px;">
-            <span style="background:#f9a826; color:#fff; font-size:0.78rem; font-weight:700; padding:3px 12px; border-radius:99px;">🛡️ ADMIN</span>
-        </div>
-        <div class="sidebar-detail"><span class="sidebar-icon">✉️</span><span id="sidebar-email">—</span></div>
-        <div class="sidebar-detail"><span class="sidebar-icon">📞</span><span id="sidebar-phone">—</span></div>
-        <div class="sidebar-detail"><span class="sidebar-icon">👤</span><span id="sidebar-role-label">—</span></div>
+      <div class="sidebar-name" id="sidebar-username">—</div>
+      <div id="sidebar-admin-badge" style="display:none; margin-bottom:10px;">
+        <span style="background:#f9a826; color:#fff; font-size:0.78rem; font-weight:700; padding:3px 12px; border-radius:99px;">
+          🛡️ ADMIN
+        </span>
+      </div>
+      <div class="sidebar-detail"><span class="sidebar-icon">✉️</span><span id="sidebar-email">—</span></div>
+      <div class="sidebar-detail"><span class="sidebar-icon">📞</span><span id="sidebar-phone">—</span></div>
+      <div class="sidebar-detail"><span class="sidebar-icon">👤</span><span id="sidebar-role-label">—</span></div>
     </div>
     <hr class="sidebar-divider">
     <div class="sidebar-actions">
-        <a href="my-adoptions.html" class="sidebar-link" id="sidebar-adoptions-link">🐾 My Adoptions</a>
-        <a href="admin.html" class="sidebar-link" id="sidebar-dashboard-link" style="display:none;">⚙️ Admin Dashboard</a>
-        <button class="sidebar-logout" onclick="logout()">🚪 Log Out</button>
+      <a href="report.html" class="sidebar-link" id="sidebar-reports-link">🚨 Report Animal</a>
+      <a href="my-reports.html" class="sidebar-link" id="sidebar-my-reports-link">📋 My Reports</a>
+      <a href="my-adoptions.html" class="sidebar-link" id="sidebar-adoptions-link">🐾 My Adoptions</a>
+      <a href="admin.html" class="sidebar-link" id="sidebar-dashboard-link" style="display:none;">⚙️ Admin Dashboard</a>
+      <button class="sidebar-logout" onclick="logout()">🚪 Log Out</button>
     </div>
-</div>
+  </div>
+
 
 <!-- Footer -->
 <footer class="site-footer">
