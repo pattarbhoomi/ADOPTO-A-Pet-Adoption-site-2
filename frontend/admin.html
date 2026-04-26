@@ -348,6 +348,7 @@
         <li><a onclick="switchSection('dashboard', this)">📊 Dashboard</a></li>
         <li><a onclick="switchSection('requests', this)">📋 Requests</a></li>
         <li><a onclick="switchSection('feedback', this)">💬 Feedback</a></li>
+        <li><a onclick="switchSection('animal-reports', this)">🚨 Animal Reports</a></li>
         <li>
             <a class="has-chevron" onclick="toggleSubmenu(this)" id="manage-pets-toggle">
                 🐕 Manage Pets <i class="chevron" id="pets-chevron">›</i>
@@ -404,6 +405,12 @@
         <p class="section-title">User Feedback</p>
         <div id="feedback-container"></div>
     </div>
+
+    <!-- Animal Reports -->
+<div id="animal-reports" class="section">
+    <p class="section-title">🚨 Animal Reports</p>
+    <div id="animal-reports-container"></div>
+</div>
 
     <!-- View Pets -->
     <div id="view-pets" class="section">
@@ -512,6 +519,7 @@ const headings = {
     'dashboard'      : '✨ Dashboard',
     'requests'       : '📋 Adoption Requests',
     'feedback'       : '💬 User Feedback',
+    'animal-reports' : '🚨 Animal Reports',
     'view-pets'      : '👁️ View Pets',
     'add-pet'        : '➕ Add New Pet',
     'delete-pet'     : '🗑️ Delete a Pet',
@@ -534,6 +542,7 @@ function switchSection(sectionId, navEl) {
     if (sectionId === 'dashboard')       loadDashboardStats();
     if (sectionId === 'requests')        loadRequests();
     if (sectionId === 'feedback')        loadFeedback();
+    if (sectionId === 'animal-reports') loadAnimalReports();
     if (sectionId === 'view-pets')       loadViewPets();
     if (sectionId === 'delete-pet')      loadDeletePets();
     if (sectionId === 'ngo-management')  loadNGOs();
@@ -650,6 +659,70 @@ async function loadFeedback() {
         `).join('');
     } catch (err) {
         container.innerHTML = `<div class="empty-state"><h3>Error loading feedback</h3></div>`;
+    }
+}
+
+async function loadAnimalReports() {
+    const container = document.getElementById('animal-reports-container');
+    try {
+        const reports = await fetch(`${API}/api/ngo/reports`).then(r => r.json());
+
+        if (reports.length === 0) {
+            container.innerHTML = `<div class="empty-state"><h3>No reports yet</h3></div>`;
+            return;
+        }
+
+        container.innerHTML = reports.map(r => `
+            <div class="request-card ${r.status}">
+                <div class="request-header">
+                    <div class="request-info">
+                        <h4>${r.animal_type || 'Animal'} — Reported by ${r.user_name || 'User'}</h4>
+                        <p class="request-meta">
+                            📅 ${new Date(r.reported_at).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}
+                        </p>
+                    </div>
+                    <span class="status-badge status-${r.status === 'acknowledged' ? 'approved' : r.status === 'resolved' ? 'approved' : 'pending'}">
+                        ${r.status === 'pending'      ? '⏳ Pending'      : ''}
+                        ${r.status === 'acknowledged' ? '✅ Acknowledged' : ''}
+                        ${r.status === 'resolved'     ? '🔵 Resolved'     : ''}
+                    </span>
+                </div>
+
+                <div class="request-details">
+                    <div class="detail-item"><strong>Reporter</strong><p>${r.user_name || 'N/A'}</p></div>
+                    <div class="detail-item"><strong>Email</strong><p>${r.user_email || 'N/A'}</p></div>
+                    <div class="detail-item"><strong>Phone</strong><p>${r.user_phone || 'N/A'}</p></div>
+                    <div class="detail-item"><strong>Animal Type</strong><p>${r.animal_type || 'N/A'}</p></div>
+                </div>
+
+                <div class="detail-item" style="margin:10px 0;">
+                    <strong>📍 Location</strong>
+                    <p>${r.location || 'N/A'}</p>
+                </div>
+
+                <div class="detail-item" style="margin-bottom:12px;">
+                    <strong>Description</strong>
+                    <p>${r.description || 'N/A'}</p>
+                </div>
+
+                ${r.image_url ? `
+                <img src="${r.image_url}" alt="Animal"
+                    style="width:140px;height:110px;object-fit:cover;border-radius:10px;
+                           border:2px solid #f9a826;margin-bottom:12px;"
+                    onerror="this.style.display='none'">` : ''}
+
+                ${r.ngo_message ? `
+                <div class="existing-note">
+                    <strong>NGO Response:</strong> ${r.ngo_message}
+                    ${r.acknowledged_at ? `<br><span style="font-size:0.8rem;color:#aaa;">
+                        Acknowledged at: ${new Date(r.acknowledged_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}
+                    </span>` : ''}
+                </div>` : ''}
+            </div>
+        `).join('');
+
+    } catch (err) {
+        container.innerHTML = `<div class="empty-state"><h3>Error loading reports</h3></div>`;
     }
 }
 
